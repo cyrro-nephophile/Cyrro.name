@@ -1526,6 +1526,33 @@ html[data-theme=dark][data-ph="4"] #sky::after,html[data-theme=dark][data-ph="5"
 html.theme-swap *,html.theme-swap *::before,html.theme-swap *::after{transition:none!important}
 html.theme-swap :is(.cl,.bd,.bd path,.tw,.hp,.sc-icon,.scroll-card){animation-play-state:paused!important}
 html.theme-swap .scroll-card::before,html.theme-swap .scroll-card::after,html.theme-swap .s2-wind-btn::after,html.theme-swap #s6::after{animation-play-state:paused!important}
+
+/* ===== Fun fact: Cirrus > Cirro > Cyrro ===== */
+#s5b{position:relative;display:flex;justify-content:center;padding:3.5rem 1.25rem 5.5rem}
+.ff-wrap{width:100%;max-width:560px}
+.ff-label{margin:0 0 .7rem;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-2)}
+.ff-card{display:flex;flex-direction:column;align-items:center;gap:1.4rem;padding:2rem 1.2rem 1.7rem;border:1px solid var(--card-border);border-radius:26px;text-align:center;background:linear-gradient(145deg,color-mix(in srgb,var(--accent-2) 14%,transparent),transparent 60%),var(--card-bg)}
+.ff-chain{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.35em .5em;font-size:clamp(1.35rem,6.6vw,2.2rem);font-weight:800;line-height:1.1;letter-spacing:-.02em;color:var(--text-head);font-family:Syne,'Instrument Sans',sans-serif}
+html body .ff-chain .ff-step{font-family:Syne,'Instrument Sans',sans-serif!important;white-space:nowrap;transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
+.ff-step:not(.ff-last){opacity:.6}
+.ff-last{color:var(--accent-2)}
+.ff-arrow{flex:none;width:.42em;height:.42em;border-top:.12em solid currentColor;border-right:.12em solid currentColor;border-radius:1px;transform:rotate(45deg);opacity:.45;transition:opacity .7s ease}
+.ff-link{display:inline-flex;align-items:center;gap:.45rem;padding:.8rem 1.3rem;border-radius:99px;background:var(--accent-2);color:#fff;font-family:inherit;font-weight:600;font-size:.92rem;line-height:1;text-decoration:none;-webkit-tap-highlight-color:transparent;transition:transform .25s}
+.ff-link:hover{transform:translateY(-2px)}
+.ff-link:active{transform:scale(.96)}
+.ff-link:focus-visible{outline:3px solid var(--accent-2);outline-offset:3px}
+/* animasi muncul bertahap (hanya bila JS aktif) */
+.ff-card.pre .ff-step,.ff-card.pre .ff-arrow,.ff-card.pre .ff-link{opacity:0}
+.ff-card.pre .ff-step{transform:translateY(14px)}
+.ff-card.pre.in .ff-step:not(.ff-last){opacity:.6}.ff-card.pre.in .ff-last{opacity:1}
+.ff-card.pre.in .ff-step{transform:none}
+.ff-card.pre.in .ff-arrow{opacity:.45}.ff-card.pre.in .ff-link{opacity:1}
+.ff-card.pre .ff-step:nth-of-type(1){transition-delay:0s}
+.ff-card.pre .ff-arrow:nth-of-type(1){transition-delay:.25s}
+.ff-card.pre .ff-step:nth-of-type(2){transition-delay:.4s}
+.ff-card.pre .ff-arrow:nth-of-type(2){transition-delay:.65s}
+.ff-card.pre .ff-last{transition-delay:.8s}
+.ff-card.pre .ff-link{transition:opacity .6s 1.15s,transform .25s}
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=Instrument+Sans:wght@400;500;600&display=swap">
 </head>
@@ -1812,6 +1839,19 @@ html.theme-swap .scroll-card::before,html.theme-swap .scroll-card::after,html.th
     <span class="s5-symbol">🌿</span>
     <blockquote class="s5-quote" id="quoteEl"></blockquote>
     <div class="s5-attr">✦ moto favorit</div>
+  </div>
+</section>
+
+<!-- ══ FUN FACT: asal nama ══ -->
+<section id="s5b">
+  <div class="ff-wrap">
+    <p class="ff-label">✦ fun fact</p>
+    <div class="ff-card" id="ffCard">
+      <div class="ff-chain" role="group" aria-label="Cirrus menjadi Cirro menjadi Cyrro">
+        <span class="ff-step">Cirrus</span><i class="ff-arrow" aria-hidden="true"></i><span class="ff-step">Cirro</span><i class="ff-arrow" aria-hidden="true"></i><span class="ff-step ff-last">Cyrro</span>
+      </div>
+      <a class="ff-link" href="/nama/">Baca selengkapnya <span aria-hidden="true">→</span></a>
+    </div>
   </div>
 </section>
 
@@ -2808,6 +2848,13 @@ addEventListener('scroll',()=>{
 },{passive:true});
 
 measure();drawOrb();
+})();
+</script>
+<script>
+(function(){
+const c=document.getElementById('ffCard');if(!c||!window.IntersectionObserver)return;
+c.classList.add('pre');
+new IntersectionObserver((es,o)=>{if(es[0].isIntersecting){c.classList.add('in');o.disconnect()}},{threshold:.5}).observe(c);
 })();
 </script>
 </body>
