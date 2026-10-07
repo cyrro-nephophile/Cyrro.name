@@ -641,6 +641,24 @@ section{position:relative;width:100%;overflow:hidden;}
   transition:opacity .25s,transform .2s;white-space:nowrap;flex-shrink:0;
 }
 .gpg-btn:hover{opacity:.82;transform:scale(1.04);}
+
+/* ── MINIGAME CARD (di bawah kartu Google Play Games) ── */
+.gpg-extra{
+  margin-top:1rem;display:flex;align-items:center;gap:.45rem;
+  font-size:.68rem;letter-spacing:.06em;color:var(--text-soft);
+}
+.gpg-extra::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent-2);box-shadow:0 0 6px var(--accent-2);flex-shrink:0;}
+.gpg-extra b{font-weight:500;color:var(--accent-2);}
+.gpg-extra + .gpg-mini{margin-top:.45rem;}
+.gpg-mini{margin-top:.7rem;}
+.gpg-ico{
+  width:42px;height:42px;flex-shrink:0;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;font-size:1.35rem;line-height:1;
+  background:linear-gradient(160deg,#7a3f7e,#d36f84 70%,#ffb47c);
+  box-shadow:0 2px 8px rgba(122,63,126,.28);
+}
+.gpg-mini .gpg-btn{background:var(--accent-2);}
+html body .gpg-ico{width:40px;height:40px;flex:0 0 40px;}
 .sc-visual{display:none;}
 
 /* ── Windah latest video player ── */
@@ -1926,6 +1944,15 @@ html body .mobile-menu.open .mm-ridge i:nth-child(2){transition-delay:.42s}
             <div class="gpg-link">my.play/1𝐂𝐲𝐫𝐫𝐨</div>
           </div>
           <a class="gpg-btn" href="https://my.play/1𝐂𝐲𝐫𝐫𝐨" target="_blank" rel="noopener">Buka Profil ↗</a>
+        </div>
+        <div class="gpg-extra"><b>Extra</b></div>
+        <div class="gpg-card gpg-mini">
+          <div class="gpg-ico" aria-hidden="true">💣</div>
+          <div class="gpg-info">
+            <div class="gpg-name">Minigame: Minesweeper</div>
+            <div class="gpg-link">cyrro.my.id/minigame/minesweeper</div>
+          </div>
+          <a class="gpg-btn" href="/minigame/minesweeper/">Main Sekarang →</a>
         </div>
       </div>
     </div>
