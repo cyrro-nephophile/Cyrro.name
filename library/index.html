@@ -126,14 +126,15 @@ h1{
 .sh h2{font-weight:300;font-size:1.2rem;letter-spacing:.12em;white-space:nowrap;}
 .sh i{flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.4),transparent);}
 .sh span{font-size:.72rem;letter-spacing:.1em;padding:.2rem .65rem;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid var(--panel-line);}
-.sec ol{list-style:none;display:grid;gap:.6rem;counter-reset:n;}
-.row{--a1:#ffb067;--a2:#ff7a8a;position:relative;display:flex;align-items:center;gap:.9rem;padding:.8rem .9rem .8rem .7rem;border-radius:20px;color:#fff;text-decoration:none;overflow:hidden;counter-increment:n;background:linear-gradient(120deg,color-mix(in srgb,var(--a1) 22%,transparent),rgba(255,255,255,.07) 70%);border:1px solid rgba(255,255,255,.14);transition:transform .3s cubic-bezier(.3,1.4,.5,1),border-color .25s,background .25s;opacity:0;animation:rise .6s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:var(--d,0ms);}
-.row::before{content:'0'counter(n);min-width:2ch;font:200 2.3rem/1 'Outfit',sans-serif;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.55);text-align:center;}
-.row .tile{width:54px;height:54px;flex:none;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.65rem;background:linear-gradient(135deg,var(--a1),var(--a2));box-shadow:0 8px 22px color-mix(in srgb,var(--a2) 45%,transparent),inset 0 1px 0 rgba(255,255,255,.4);transition:transform .35s cubic-bezier(.3,1.6,.5,1);}
+.sec ol{list-style:none;display:grid;grid-template-columns:minmax(0,1fr);gap:.6rem;counter-reset:n;}
+.sec li{min-width:0;}
+.row{--a1:#ffb067;--a2:#ff7a8a;position:relative;display:flex;align-items:center;gap:.75rem;padding:.8rem .8rem .8rem .6rem;border-radius:20px;max-width:100%;color:#fff;text-decoration:none;overflow:hidden;counter-increment:n;background:linear-gradient(120deg,color-mix(in srgb,var(--a1) 22%,transparent),rgba(255,255,255,.07) 70%);border:1px solid rgba(255,255,255,.14);transition:transform .3s cubic-bezier(.3,1.4,.5,1),border-color .25s,background .25s;opacity:0;animation:rise .6s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:var(--d,0ms);}
+.row::before{content:'0'counter(n);min-width:2ch;font:200 1.9rem/1 'Outfit',sans-serif;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.55);text-align:center;}
+.row .tile{width:50px;height:50px;flex:none;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.65rem;background:linear-gradient(135deg,var(--a1),var(--a2));box-shadow:0 8px 22px color-mix(in srgb,var(--a2) 45%,transparent),inset 0 1px 0 rgba(255,255,255,.4);transition:transform .35s cubic-bezier(.3,1.6,.5,1);}
 .row .tx{flex:1;min-width:0;}
-.row b{display:block;font-weight:500;font-size:1.08rem;letter-spacing:.02em;}
+.row b{display:block;font-weight:500;font-size:1.08rem;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .row small{display:inline-block;margin-top:.3rem;font-size:.66rem;letter-spacing:.08em;padding:.15rem .6rem;border-radius:999px;background:rgba(255,255,255,.14);color:rgba(255,255,255,.85);}
-.row .go{width:38px;height:38px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);transition:background .25s,color .25s,transform .3s cubic-bezier(.3,1.5,.5,1);}
+.row .go{width:36px;height:36px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);transition:background .25s,color .25s,transform .3s cubic-bezier(.3,1.5,.5,1);}
 .row .go svg{width:14px;height:14px;fill:currentColor;margin-left:2px;}
 @media (hover:hover){.row:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.45);}.row:hover .tile{transform:rotate(-7deg) scale(1.08);}.row:hover .go{background:#fff;color:#4a2a63;transform:scale(1.08);}}
 .row:active{transform:scale(.97);}
@@ -172,13 +173,12 @@ h1{
 
 <main>
   <h1>library</h1>
-  <p class="sub">Tempat aku menyimpan hal-hal favorit.</p>
   <section class="sec">
-    <div class="sh"><h2>mini game</h2><i></i><span>3 game</span></div>
+    <div class="sh"><h2>mini game</h2><i></i></div>
     <ol>
-      <li><a class="row r1" style="--d:120ms" href="/library/minigame/sudoku/"><span class="tile" aria-hidden="true">🔢</span><span class="tx"><b>Sudoku</b><small>puzzle angka</small></span><span class="go" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 3.5v13l11-6.5z"/></svg></span></a></li>
-      <li><a class="row r2" style="--d:240ms" href="/library/minigame/minesweeper/"><span class="tile" aria-hidden="true">💣</span><span class="tx"><b>Minesweeper</b><small>puzzle ranjau</small></span><span class="go" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 3.5v13l11-6.5z"/></svg></span></a></li>
-      <li><a class="row r3" style="--d:360ms" href="/library/minigame/blockblast/"><span class="tile" aria-hidden="true">🧱</span><span class="tx"><b>Block Blast</b><small>puzzle balok</small></span><span class="go" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 3.5v13l11-6.5z"/></svg></span></a></li>
+      <li><a class="row r1" style="--d:120ms" href="/library/minigame/sudoku/"><span class="tile" aria-hidden="true">🔢</span><span class="tx"><b>Sudoku</b></span><span class="go" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 3.5v13l11-6.5z"/></svg></span></a></li>
+      <li><a class="row r2" style="--d:240ms" href="/library/minigame/minesweeper/"><span class="tile" aria-hidden="true">💣</span><span class="tx"><b>Minesweeper</b></span><span class="go" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 3.5v13l11-6.5z"/></svg></span></a></li>
+      <li><a class="row r3" style="--d:360ms" href="/library/minigame/blockblast/"><span class="tile" aria-hidden="true">🧱</span><span class="tx"><b>Block Blast</b></span><span class="go" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 3.5v13l11-6.5z"/></svg></span></a></li>
     </ol>
   </section>
 </main>
