@@ -643,13 +643,6 @@ section{position:relative;width:100%;overflow:hidden;}
 .gpg-btn:hover{opacity:.82;transform:scale(1.04);}
 
 /* ── MINIGAME CARD (di bawah kartu Google Play Games) ── */
-.gpg-extra{
-  margin-top:1rem;display:flex;align-items:center;gap:.45rem;
-  font-size:.68rem;letter-spacing:.06em;color:var(--text-soft);
-}
-.gpg-extra::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent-2);box-shadow:0 0 6px var(--accent-2);flex-shrink:0;}
-.gpg-extra b{font-weight:500;color:var(--accent-2);}
-.gpg-extra + .gpg-mini{margin-top:.45rem;}
 .gpg-mini{margin-top:.7rem;}
 .gpg-ico{
   width:42px;height:42px;flex-shrink:0;border-radius:10px;
@@ -657,7 +650,47 @@ section{position:relative;width:100%;overflow:hidden;}
   background:linear-gradient(160deg,#7a3f7e,#d36f84 70%,#ffb47c);
   box-shadow:0 2px 8px rgba(122,63,126,.28);
 }
-.gpg-mini .gpg-btn{background:var(--accent-2);}
+.gpg-mini .gpg-btn{background:var(--accent-2);border:none;cursor:pointer;}
+
+/* ── LIBRARY MINI GAMES (pop-up) ── */
+.mg-ov{
+  position:fixed;inset:0;z-index:9996;display:flex;align-items:center;justify-content:center;padding:1rem;
+  background:rgba(10,14,26,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .28s ease,visibility 0s linear .28s;
+}
+.mg-ov.open{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .28s ease,visibility 0s;}
+.mg-sheet{
+  width:min(100%,380px);padding:1.2rem 1.1rem 1.1rem;border-radius:20px;
+  background:var(--nav-bg);border:1px solid var(--nav-border);
+  box-shadow:0 24px 70px rgba(0,0,0,.28);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  transform:translateY(16px) scale(.95);transition:transform .45s cubic-bezier(.3,1.4,.5,1);
+}
+[data-theme="dark"] .mg-sheet{background:rgba(14,19,34,.94);}
+.mg-ov.open .mg-sheet{transform:none;}
+.mg-head{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1rem;}
+.mg-title{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:1.6rem;color:var(--text-head);line-height:1.1;}
+.mg-sub{font-size:.75rem;color:var(--text-soft);margin-top:.25rem;letter-spacing:.03em;}
+.mg-x{
+  width:32px;height:32px;flex-shrink:0;border-radius:50%;border:1.5px solid var(--card-border);background:var(--card-bg);
+  color:var(--text-soft);font-size:1rem;line-height:1;cursor:pointer;transition:border-color .25s,transform .25s;
+}
+.mg-x:hover{border-color:var(--accent-1);transform:rotate(90deg);}
+.mg-list{display:grid;gap:.6rem;}
+.mg-item{
+  display:flex;align-items:center;gap:.8rem;padding:.75rem .85rem;border-radius:14px;text-decoration:none;
+  background:rgba(45,158,107,.07);border:1px solid rgba(45,158,107,.2);
+  transition:transform .2s,border-color .25s,background .25s;
+}
+[data-theme="dark"] .mg-item{background:rgba(74,222,128,.06);border-color:rgba(74,222,128,.15);}
+.mg-item:hover{transform:translateX(3px);border-color:var(--accent-2);}
+.mg-ic{width:44px;height:44px;flex-shrink:0;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;line-height:1;
+  background:linear-gradient(160deg,#7a3f7e,#d36f84 70%,#ffb47c);box-shadow:0 2px 8px rgba(122,63,126,.28);}
+.mg-tx{flex:1;min-width:0;}
+.mg-nm{font-size:.95rem;font-weight:500;color:var(--text-head);}
+.mg-ds{font-size:.72rem;color:var(--text-soft);margin-top:.15rem;line-height:1.4;}
+.mg-go{color:var(--accent-2);font-size:1.1rem;flex-shrink:0;}
+html.mg-lock{overflow:hidden;}
 html body .gpg-ico{width:40px;height:40px;flex:0 0 40px;}
 .sc-visual{display:none;}
 
@@ -1945,14 +1978,13 @@ html body .mobile-menu.open .mm-ridge i:nth-child(2){transition-delay:.42s}
           </div>
           <a class="gpg-btn" href="https://my.play/1𝐂𝐲𝐫𝐫𝐨" target="_blank" rel="noopener">Buka Profil ↗</a>
         </div>
-        <div class="gpg-extra"><b>Extra</b></div>
         <div class="gpg-card gpg-mini">
-          <div class="gpg-ico" aria-hidden="true">💣</div>
+          <div class="gpg-ico" aria-hidden="true">🕹️</div>
           <div class="gpg-info">
-            <div class="gpg-name">Minigame: Minesweeper</div>
-            <div class="gpg-link">cyrro.my.id/minigame/minesweeper</div>
+            <div class="gpg-name">Extra: Mini Games</div>
+            <div class="gpg-link">Library · 2 game</div>
           </div>
-          <a class="gpg-btn" href="/minigame/minesweeper/">Main Sekarang →</a>
+          <button class="gpg-btn" id="mgOpen" type="button" aria-haspopup="dialog" aria-controls="mgOv">Buka Library ▾</button>
         </div>
       </div>
     </div>
@@ -3134,6 +3166,42 @@ const B='<svg viewBox="0 0 40 60" fill="currentColor" aria-hidden="true"><path d
   const e=document.createElement('div');e.className='balloon';e.style.cssText=v[0];e.innerHTML=B;f.appendChild(e);
 });
 st.appendChild(f);
+})();
+</script>
+<!-- LIBRARY MINI GAMES -->
+<div class="mg-ov" id="mgOv" aria-hidden="true">
+  <div class="mg-sheet" role="dialog" aria-modal="true" aria-labelledby="mgTitle">
+    <div class="mg-head">
+      <div>
+        <div class="mg-title" id="mgTitle">Library</div>
+        <div class="mg-sub">Extra: Mini Games</div>
+      </div>
+      <button class="mg-x" id="mgClose" type="button" aria-label="Tutup">✕</button>
+    </div>
+    <div class="mg-list">
+      <a class="mg-item" href="/minigame/minesweeper/">
+        <div class="mg-ic" aria-hidden="true">💣</div>
+        <div class="mg-tx"><div class="mg-nm">Minesweeper</div><div class="mg-ds">Sapu bukit pasir tanpa menyentuh ranjau.</div></div>
+        <span class="mg-go">→</span>
+      </a>
+      <a class="mg-item" href="/minigame/blockblast/">
+        <div class="mg-ic" aria-hidden="true">🧱</div>
+        <div class="mg-tx"><div class="mg-nm">Block Blast</div><div class="mg-ds">Susun balok, penuhi baris, lalu ledakkan.</div></div>
+        <span class="mg-go">→</span>
+      </a>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var ov=document.getElementById('mgOv'),openBtn=document.getElementById('mgOpen'),closeBtn=document.getElementById('mgClose');
+  if(!ov||!openBtn)return;
+  function open(){ov.classList.add('open');ov.setAttribute('aria-hidden','false');document.documentElement.classList.add('mg-lock');closeBtn.focus({preventScroll:true});}
+  function close(){ov.classList.remove('open');ov.setAttribute('aria-hidden','true');document.documentElement.classList.remove('mg-lock');openBtn.focus({preventScroll:true});}
+  openBtn.addEventListener('click',open);
+  closeBtn.addEventListener('click',close);
+  ov.addEventListener('click',function(e){if(e.target===ov)close();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov.classList.contains('open'))close();});
 })();
 </script>
 </body>
