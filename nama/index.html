@@ -156,7 +156,7 @@ function update(){
     m.style.opacity=i?Math.max(0,1-d/(H*.55)):1;
     if(!RM)m.style.transform='translate3d(0,'+((.5-cl((c-r.top)/r.height))*3)+'%,0) scale('+(1.1-.05*cl((c-r.top)/r.height))+')'});
   const A=R.map((r,i)=>i?(r.top+r.bottom)/2:r.bottom);let km=12;
-  if(c<=A[0]){km=0;for(let j=0;j<A.length-1;j++)if(c<=A[j]&&c>=A[j+1]){km=KM[j]+(KM[j+1]-KM[j])*(A[j]-c)/(A[j]-A[j+1]);break}}
+  if(c>=A[0]){km=0;for(let j=0;j<A.length-1;j++)if(c>=A[j]&&c<=A[j+1]){km=KM[j]+(KM[j+1]-KM[j])*(c-A[j])/(A[j+1]-A[j]);break}}
   pin.style.top=(1-km/12)*100+'%';kmEl.textContent=(km>.5?'±':'')+Math.round(km)+' km';
   bHi.classList.toggle('on',km>=6);bLo.classList.toggle('on',km<=2);
   const q=sp.getBoundingClientRect(),lit=cl((H*.9-q.top)/(H*.5))*(words.length+4);
