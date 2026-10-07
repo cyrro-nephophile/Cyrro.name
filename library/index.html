@@ -138,8 +138,13 @@ h1{
 .row .go svg{width:14px;height:14px;fill:currentColor;margin-left:2px;}
 @media (hover:hover){.row:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.45);}.row:hover .tile{transform:rotate(-7deg) scale(1.08);}.row:hover .go{background:#fff;color:#4a2a63;transform:scale(1.08);}}
 .row:active{transform:scale(.97);}
-.r2{--a1:#b58cff;--a2:#ff8fb1;}.r4{--a1:#c78bff;--a2:#c23b7a;}.r5{--a1:#ff8a5c;--a2:#d6393b;}
+.r2{--a1:#b58cff;--a2:#ff8fb1;}.r4{--a1:#ff6b6b;--a2:#d1121f;}.r5{--a1:#4be58a;--a2:#0f8a3c;}
 .row .tile.img{padding:0;overflow:hidden;background:#2d0b40 center/cover no-repeat;}.r3{--a1:#6fd3c4;--a2:#7aa8ff;}
+.row small{display:inline-flex;align-items:center;gap:.4rem;padding:.18rem .65rem .18rem .35rem;font-size:.7rem;letter-spacing:.04em;}
+.row small svg{width:15px;height:15px;flex:none;}
+.row small.yt{background:rgba(255,70,70,.2);border:1px solid rgba(255,130,130,.55);}
+.row small.sp{background:rgba(30,215,96,.18);border:1px solid rgba(90,235,145,.55);}
+.row .go.ext svg{width:15px;height:15px;margin-left:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @media (max-width:600px){
   nav{padding-left:1rem;padding-right:1rem;}
@@ -185,8 +190,8 @@ h1{
   <section class="sec">
     <div class="sh"><h2>playlist</h2><i></i></div>
     <ol>
-      <li><a class="row r4" style="--d:480ms" href="https://music.youtube.com/playlist?list=PLawOvByz18PU&amp;si=MDmpCU9IhHpjT03b" target="_blank" rel="noopener"><span class="tile img" style="background-image:url(/library/cyrrokestra.jpg)" aria-hidden="true"></span><span class="tx"><b>Cyrrokestra</b></span><span class="go" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 3.5v13l11-6.5z"/></svg></span></a></li>
-      <li><a class="row r5" style="--d:600ms" href="https://open.spotify.com/playlist/2yy0e4HnH20DYLtXdOfDkO?si=8CSpxOhLQg6NzkH2J3uH2A&amp;utm_source=copy-link&amp;pi=1tCrkggXS6Kpg" target="_blank" rel="noopener"><span class="tile img" style="background-image:url(/library/rocknroll.jpg)" aria-hidden="true"></span><span class="tx"><b>Rock'n'Roll S</b></span><span class="go" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 3.5v13l11-6.5z"/></svg></span></a></li>
+      <li><a class="row r4" style="--d:480ms" href="https://music.youtube.com/playlist?list=PLawOvByz18PU&amp;si=MDmpCU9IhHpjT03b" target="_blank" rel="noopener" aria-label="Cyrrokestra, buka di YouTube Music (tab baru)"><span class="tile img" style="background-image:url(/library/cyrrokestra.jpg)" aria-hidden="true"></span><span class="tx"><b>Cyrrokestra</b><small class="yt"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="5" width="22" height="14" rx="4.5" fill="#ff2d2d"/><path d="M10 9l5.5 3-5.5 3z" fill="#fff"/></svg>YouTube Music</small></span><span class="go ext" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 14L14 6M7.5 6H14v6.5"/></svg></span></a></li>
+      <li><a class="row r5" style="--d:600ms" href="https://open.spotify.com/playlist/2yy0e4HnH20DYLtXdOfDkO?si=Z7bQFwFsToe0qrIXph5giw&amp;utm_source=copy-link&amp;pi=LvbuxSW2Rv6uJ" target="_blank" rel="noopener" aria-label="Rock'n'Roll S, buka di Spotify (tab baru)"><span class="tile img" style="background-image:url(/library/rocknroll.jpg)" aria-hidden="true"></span><span class="tx"><b>Rock'n'Roll S</b><small class="sp"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#1ed760"/><path d="M6.2 9.3c3.8-1.1 8.4-.8 11.8 1.2M6.8 12.6c3.2-.9 7-.6 9.9 1M7.4 15.7c2.6-.7 5.4-.4 7.7.9" fill="none" stroke="#0b2a14" stroke-width="1.7" stroke-linecap="round"/></svg>Spotify</small></span><span class="go ext" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 14L14 6M7.5 6H14v6.5"/></svg></span></a></li>
     </ol>
   </section>
 </main>
