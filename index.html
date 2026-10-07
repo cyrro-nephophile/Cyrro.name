@@ -1337,7 +1337,6 @@ html body .s5-attr{padding:.55rem 1.1rem;border:1px solid var(--card-border);bor
 html body #s6{background:linear-gradient(180deg,rgba(7,11,24,0) 0,#070b18 170px,#02040a 100%)!important;padding:10rem 1.5rem 1.5rem;text-align:center;color:#dfe8ff}
 .f-peaks{position:absolute!important;left:0;right:0;top:0;height:180px;background:#070b18;clip-path:polygon(0 100%,0 62%,9% 40%,17% 58%,28% 22%,38% 54%,49% 30%,60% 60%,71% 18%,82% 52%,91% 36%,100% 58%,100% 100%)}
 .f-hero .s6-avatar-wrap{margin:0 auto 2rem;transform:scale(1.4);animation:bob 4s ease-in-out infinite}
-.f-tag{letter-spacing:.3em;font-size:.72rem;text-transform:uppercase;opacity:.7;margin-bottom:1.6rem}
 .f-cta{display:inline-block;padding:.95rem 1.8rem;border-radius:99px;background:linear-gradient(90deg,#7ee0b0,#8fb8ff);color:#06101f;font-weight:600;text-decoration:none;transition:transform .3s,box-shadow .3s}
 .f-cta:hover{transform:translateY(-3px) scale(1.04);box-shadow:0 12px 40px rgba(143,184,255,.4)}
 .f-links{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin:2.4rem 0 0}
@@ -1889,6 +1888,7 @@ html body .mobile-menu.open .mm-ridge i:nth-child(2){transition-delay:.42s}
     <li><a href="#s3" onclick="return goToSection(event,'s3')">Hobbies</a></li>
     <li><a href="#s4" onclick="return goToSection(event,'s4')">Games</a></li>
     <li><a href="#s5" onclick="return goToSection(event,'s5')">Quote</a></li>
+    <li><a href="/library/" data-s="s5c">Library</a></li>
     <li><a href="#s6" onclick="return goToSection(event,'s6')">Contact</a></li>
   </ul>
   <div class="mobile-menu-socials">
@@ -2040,19 +2040,6 @@ html body .mobile-menu.open .mm-ridge i:nth-child(2){transition-delay:.42s}
       </div>
     </div>
   </div>
-  <style>
-  .lib-entry{display:flex;justify-content:center;margin-top:2rem;padding:0 1.5rem}
-  .lib-entry a{position:relative;display:inline-flex;align-items:center;gap:.9rem;padding:.45rem .45rem .45rem 1.3rem;border-radius:999px;text-decoration:none;color:var(--text-head);background:var(--card-bg);border:1px solid var(--card-border);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 10px 30px rgba(30,70,50,.14),inset 0 1px 0 rgba(255,255,255,.5);font:500 .82rem 'Outfit',sans-serif;letter-spacing:.14em;text-transform:uppercase;transition:transform .3s cubic-bezier(.3,1.4,.5,1),box-shadow .3s,border-color .3s}
-  .lib-entry .li{font-size:1.15rem;letter-spacing:0;line-height:1}
-  .lib-entry .la{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;background:linear-gradient(135deg,var(--accent-2,#e07b39),#f2a35f);box-shadow:0 6px 16px rgba(224,123,57,.45);animation:libPulse 3.2s ease-in-out infinite;transition:transform .35s cubic-bezier(.3,1.6,.5,1)}
-  .lib-entry .la svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-  @keyframes libPulse{0%,100%{box-shadow:0 6px 16px rgba(224,123,57,.45),0 0 0 0 rgba(224,123,57,.35)}60%{box-shadow:0 6px 16px rgba(224,123,57,.45),0 0 0 12px rgba(224,123,57,0)}}
-  @media (hover:hover){.lib-entry a:hover{transform:translateY(-3px);border-color:var(--accent-2,#e07b39);box-shadow:0 16px 36px rgba(30,70,50,.2),inset 0 1px 0 rgba(255,255,255,.5)}.lib-entry a:hover .la{transform:translateX(3px) scale(1.06)}}
-  .lib-entry a:active{transform:scale(.96)}
-  [data-theme="dark"] .lib-entry a{box-shadow:0 10px 30px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.08)}
-  @media (prefers-reduced-motion:reduce){.lib-entry .la{animation:none}}
-  </style>
-  <div class="lib-entry"><a href="/library/"><span class="li" aria-hidden="true">📚</span>Buka Library<span class="la" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M4 10h11M11 5l5 5-5 5"/></svg></span></a></div>
 </section>
 
 <!-- ══ S4 GAMES ══ -->
@@ -2146,6 +2133,41 @@ html body .mobile-menu.open .mm-ridge i:nth-child(2){transition-delay:.42s}
   </div>
 </section>
 
+<!-- ══ EKSTRA ══ -->
+<section id="s5c">
+  <style>
+  #s5c{display:flex;justify-content:center;padding:0 1.25rem 5.5rem;margin-top:-2rem}
+  html body .ex-title{margin:0 0 1rem;font-family:Syne,'Instrument Sans',sans-serif;font-weight:800;font-size:clamp(1.9rem,8.5vw,2.8rem);line-height:1;letter-spacing:-.03em;color:var(--text-head)}
+  html body .ex-title span{color:var(--accent-2)}
+  html body .ex-box{flex-direction:row;align-items:center;gap:1rem;padding:1.1rem 1.1rem 1.1rem 1.2rem;text-align:left;text-decoration:none;color:var(--text-head);-webkit-tap-highlight-color:transparent;transition:transform .3s cubic-bezier(.3,1.4,.5,1),border-color .3s}
+  .ex-ic{flex:none;width:58px;height:58px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;line-height:1;background:linear-gradient(135deg,var(--accent-2,#e07b39),#f2a35f);box-shadow:0 8px 20px rgba(224,123,57,.4)}
+  .ex-tx{flex:1;min-width:0}
+  .ex-tx b{display:block;font-family:Syne,'Instrument Sans',sans-serif;font-weight:800;font-size:1.3rem;letter-spacing:-.01em;line-height:1.1}
+  .ex-chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.6rem}
+  .ex-chips i{font-style:normal;font-size:.72rem;line-height:1;padding:.32rem .62rem;border-radius:99px;border:1px solid var(--card-border);background:rgba(255,255,255,.12);color:var(--text-muted)}
+  .ex-go{flex:none;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;background:linear-gradient(135deg,var(--accent-2,#e07b39),#f2a35f);box-shadow:0 6px 16px rgba(224,123,57,.45);animation:exPulse 3.2s ease-in-out infinite;transition:transform .35s cubic-bezier(.3,1.6,.5,1)}
+  .ex-go svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  @keyframes exPulse{0%,100%{box-shadow:0 6px 16px rgba(224,123,57,.45),0 0 0 0 rgba(224,123,57,.35)}60%{box-shadow:0 6px 16px rgba(224,123,57,.45),0 0 0 12px rgba(224,123,57,0)}}
+  @media (hover:hover){html body .ex-box:hover{transform:translateY(-3px);border-color:var(--accent-2,#e07b39)}.ex-box:hover .ex-go{transform:translateX(3px) scale(1.06)}}
+  html body .ex-box:active{transform:scale(.98)}
+  .ex-box:focus-visible{outline:3px solid var(--accent-2,#e07b39);outline-offset:3px}
+  #exWrap.pre{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
+  #exWrap.pre.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){.ex-go{animation:none}#exWrap.pre{transition:none}}
+  </style>
+  <div class="ff-wrap" id="exWrap">
+    <h2 class="ex-title">Ekstra<span>:</span></h2>
+    <a class="ff-card ex-box" href="/library/" aria-label="Library: mini game, playlist, dan tool">
+      <span class="ex-ic" aria-hidden="true">📚</span>
+      <span class="ex-tx"><b>Library</b><span class="ex-chips" aria-hidden="true"><i>🎮 Mini game</i><i>🎵 Playlist</i><i>🧰 Tool</i></span></span>
+      <span class="ex-go" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M4 10h11M11 5l5 5-5 5"/></svg></span>
+    </a>
+  </div>
+  <script>
+  (function(){var w=document.getElementById('exWrap');if(!w||!('IntersectionObserver' in window))return;w.classList.add('pre');var o=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){w.classList.add('in');o.disconnect()}})},{threshold:.25});o.observe(w)})();
+  </script>
+</section>
+
 <!-- ══ S6 FOOTER ══ -->
 <section id="s6">
   <div class="f-peaks"></div>
@@ -2156,7 +2178,6 @@ html body .mobile-menu.open .mm-ridge i:nth-child(2){transition-delay:.42s}
         </div>
         <div class="s6-avatar-shimmer"></div>
       </div>
-    <div class="f-tag">nephophile · alpine soul</div>
   </div>
   <div class="f-links f-r"><a href="#s1">Home</a><a href="#s3">Hobbies</a><a href="#s4">Games</a><a href="#s5">Quote</a></div>
   <div class="f-crew">
@@ -2475,11 +2496,11 @@ function goToSection(e,id){
 }
 function markCurrentSection(){
   const mid=window.innerHeight*0.4;let cur='s1';
-  ['s1','s3','s4','s5','s6'].forEach(id=>{
+  ['s1','s3','s4','s5','s5c','s6'].forEach(id=>{
     const el=document.getElementById(id);
     if(el&&el.getBoundingClientRect().top<=mid)cur=id;
   });
-  mobileMenu.querySelectorAll('ul a').forEach(a=>a.classList.toggle('here',a.getAttribute('href')==='#'+cur));
+  mobileMenu.querySelectorAll('ul a').forEach(a=>a.classList.toggle('here',(a.dataset.s||a.getAttribute('href').slice(1))===cur));
 }
 hamburger.setAttribute('aria-expanded','false');
 hamburger.setAttribute('aria-label','Menu');
@@ -2501,6 +2522,9 @@ hamburger.addEventListener('click',()=>{
   }
   mobileMenu.classList.toggle('open');
 });
+
+// balik dari halaman Library lewat tombol back: tutup menu yang kebawa di cache browser
+window.addEventListener('pageshow',e=>{if(e.persisted&&mobileMenu.classList.contains('open'))closeMenu(false)});
 
 /* ── QUOTE ── */
 const QUOTE="Waktu Itu Berharga, Lakukan Hal Yang Ingin Kamu Lakukan";
