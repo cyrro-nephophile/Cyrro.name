@@ -1488,6 +1488,135 @@ html body #orb,html[data-theme=dark] body #orb{opacity:1}
 #stage #orb{z-index:2}
 #stage .st,#stage .cl,#stage .bd{z-index:3}
 #stage .mtn{z-index:4}
+/* ===== Alto-style: lanskap berlapis, kabut horizon, langit golden-hour, parallax ===== */
+#stage .mtn.a{--c2:var(--m1b)}#stage .mtn.b{--c2:var(--m2b)}#stage .mtn.c{--c2:var(--m3b)}
+#stage .mtn.a path.g{fill:url(#mga)}#stage .mtn.b path.g{fill:url(#mgb)}#stage .mtn.c path.g{fill:url(#mgc)}
+/* kabut hangat di horizon, di antara matahari/bulan dan gunung */
+#stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:60%;z-index:2;pointer-events:none;background:linear-gradient(to top,var(--hz),transparent)}
+/* langit terang: teal fajar → krem → peach di horizon, dst. */
+html:not([data-theme=dark]) #sky .k0{background:linear-gradient(180deg,#bfe6e0,#f6ecd0 62%,#ffd6a5)}
+html:not([data-theme=dark]) #sky .k1{background:linear-gradient(180deg,#9fd4f0,#dff4f2 65%,#fff1c9)}
+html:not([data-theme=dark]) #sky .k2{background:linear-gradient(180deg,#d9a7d0,#ffb8a0 58%,#ffd08a)}
+html:not([data-theme=dark]) #sky .k3{background:linear-gradient(180deg,#a893d6,#e8b3c8 60%,#ffc9a0)}
+/* parallax: lapisan jauh bergeser pelan, dekat lebih jauh (jalan di compositor) */
+@supports (animation-timeline: scroll()){
+@keyframes pxA{to{transform:translate3d(-1.5%,10px,0)}}
+@keyframes pxB{to{transform:translate3d(-3%,16px,0)}}
+@keyframes pxC{to{transform:translate3d(-4.5%,0,0)}}
+html #stage .mtn.a{animation:pxA 1s linear both;animation-timeline:scroll(root)}
+html #stage .mtn.b{animation:pxB 1s linear both;animation-timeline:scroll(root)}
+html #stage .mtn.c{animation:pxC 1s linear both;animation-timeline:scroll(root)}
+}
+/* ===== warna gunung & kabut mengikuti suasana (pagi/siang/sore/senja · Maghrib/malam/tengah malam/subuh) ===== */
+@property --m1{syntax:'<color>';inherits:true;initial-value:#b9ddc8}
+@property --m2{syntax:'<color>';inherits:true;initial-value:#86c29b}
+@property --m3{syntax:'<color>';inherits:true;initial-value:#3f8a63}
+@property --m1b{syntax:'<color>';inherits:true;initial-value:#e8f0cc}
+@property --m2b{syntax:'<color>';inherits:true;initial-value:#b6d9a8}
+@property --m3b{syntax:'<color>';inherits:true;initial-value:#2d6f50}
+@property --hz{syntax:'<color>';inherits:true;initial-value:rgba(255,222,160,.6)}
+html:root{--m1:#b9ddc8;--m2:#86c29b;--m3:#3f8a63;--m1b:#e8f0cc;--m2b:#b6d9a8;--m3b:#2d6f50;--hz:rgba(255,222,160,.6);transition:--m1 1s ease,--m2 1s ease,--m3 1s ease,--m1b 1s ease,--m2b 1s ease,--m3b 1s ease,--hz 1s ease}
+html:root[data-ph="2"]{--m1:#a5d7c9;--m2:#6cb88f;--m3:#2f8059;--m1b:#dff0d0;--m2b:#a5d6a0;--m3b:#28704c;--hz:rgba(255,244,200,.45);}
+html:root[data-ph="3"]{--m1:#d9a5a8;--m2:#b07a8a;--m3:#6e4a6a;--m1b:#f4cdb0;--m2b:#e0a99a;--m3b:#5a3c5c;--hz:rgba(255,170,120,.6);}
+html:root[data-ph="4"],html:root[data-ph="5"]{--m1:#b9a3cf;--m2:#8c78b4;--m3:#4f4580;--m1b:#e8c5d6;--m2b:#c4a0c8;--m3b:#3d3566;--hz:rgba(255,170,190,.5);}
+html:root[data-theme=dark]{--m1:#4b3f6f;--m2:#2f2a58;--m3:#171a3d;--m1b:#a05a62;--m2b:#6a3f68;--m3b:#10163a;--hz:rgba(220,100,80,.45);}
+html:root[data-theme=dark][data-ph="2"]{--m1:#1d3463;--m2:#15264d;--m3:#0c1634;--m1b:#2f5190;--m2b:#1f3a6e;--m3b:#091229;--hz:rgba(70,110,200,.3);}
+html:root[data-theme=dark][data-ph="3"]{--m1:#0f1830;--m2:#0a1124;--m3:#050912;--m1b:#172545;--m2b:#0f1a33;--m3b:#03060f;--hz:rgba(40,60,120,.18);}
+html:root[data-theme=dark][data-ph="4"],html:root[data-theme=dark][data-ph="5"]{--m1:#4a3f7a;--m2:#352f66;--m3:#1b1c46;--m1b:#a8639a;--m2b:#7a4f8c;--m3b:#14163f;--hz:rgba(200,100,160,.42);}
+/* ===== kartu kaca pastel (tanpa backdrop-filter agar tetap mulus) ===== */
+html body .scroll-card,html body .gcard,html body .ff-card{
+  border-radius:30px;border:1px solid rgba(255,255,255,.7);
+  background:linear-gradient(0deg,color-mix(in srgb,var(--m1b) 24%,transparent),transparent 60%),linear-gradient(155deg,rgba(255,255,255,.72),rgba(255,255,255,.4));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 26px 50px -26px color-mix(in srgb,var(--m3) 60%,transparent)}
+html[data-theme=dark] body .scroll-card,html[data-theme=dark] body .gcard,html[data-theme=dark] body .ff-card{
+  border-color:rgba(190,200,255,.16);
+  background:linear-gradient(0deg,color-mix(in srgb,var(--m1b) 20%,transparent),transparent 60%),linear-gradient(155deg,rgba(44,52,104,.58),rgba(14,18,44,.62));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 26px 50px -26px rgba(0,0,0,.65)}
+/* ===== LIQUID GLASS: blur + saturasi, kilau cahaya di tepi (specular), sheen diagonal ===== */
+html body .scroll-card,html body .gcard,html body .ff-card{
+  -webkit-backdrop-filter:blur(16px) saturate(1.7) brightness(1.06)!important;
+  backdrop-filter:blur(16px) saturate(1.7) brightness(1.06)!important;
+  border:1px solid rgba(255,255,255,.55);
+  background:
+    radial-gradient(130% 55% at 12% 0%,rgba(255,255,255,.55),transparent 58%),
+    linear-gradient(0deg,color-mix(in srgb,var(--m1b) 22%,transparent),transparent 55%),
+    linear-gradient(135deg,rgba(255,255,255,.56),rgba(255,255,255,.3) 48%,rgba(255,255,255,.44));
+  box-shadow:
+    inset 1.5px 1.5px 1px rgba(255,255,255,.9),
+    inset -1px -1px 1px rgba(255,255,255,.4),
+    inset 0 0 26px rgba(255,255,255,.2),
+    0 24px 50px -26px color-mix(in srgb,var(--m3) 60%,transparent)}
+html[data-theme=dark] body .scroll-card,html[data-theme=dark] body .gcard,html[data-theme=dark] body .ff-card{
+  border-color:rgba(200,210,255,.2);
+  background:
+    radial-gradient(130% 55% at 12% 0%,rgba(190,200,255,.2),transparent 58%),
+    linear-gradient(0deg,color-mix(in srgb,var(--m1b) 20%,transparent),transparent 55%),
+    linear-gradient(135deg,rgba(60,70,130,.4),rgba(14,18,44,.34) 48%,rgba(40,50,110,.4));
+  box-shadow:
+    inset 1.5px 1.5px 1px rgba(220,228,255,.4),
+    inset -1px -1px 1px rgba(160,170,255,.14),
+    inset 0 0 26px rgba(120,130,255,.08),
+    0 24px 50px -26px rgba(0,0,0,.7)}
+/* Mode Ringan mematikan blur kartu */
+html.lite body .scroll-card,html.lite body .gcard,html.lite body .ff-card{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+/* ===== footer: punggungan gunung halus (bukan gerigi) + kapsul menu liquid glass ===== */
+html body .f-peaks{clip-path:none!important;background:none!important;height:180px;pointer-events:none}
+html body .f-peaks::before,html body .f-peaks::after{content:"";position:absolute;left:0;right:0;top:0;height:100%;animation:none;opacity:1}
+html body .f-peaks::before{background:linear-gradient(180deg,rgba(120,100,185,.6),rgba(40,36,90,.35) 70%);transform:translateY(-14px);mask:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 180' preserveAspectRatio='none'><path d='M0 180 L0 84 C33.3 78.7 133.3 51.3 200 52 C266.7 52.7 333.3 90.0 400 88 C466.7 86.0 530.0 40.7 600 40 C670.0 39.3 753.3 81.3 820 84 C886.7 86.7 936.7 56.3 1000 56 C1063.3 55.7 1166.7 77.7 1200 82 L1200 180 Z'/></svg>") center/100% 100% no-repeat;-webkit-mask:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 180' preserveAspectRatio='none'><path d='M0 180 L0 84 C33.3 78.7 133.3 51.3 200 52 C266.7 52.7 333.3 90.0 400 88 C466.7 86.0 530.0 40.7 600 40 C670.0 39.3 753.3 81.3 820 84 C886.7 86.7 936.7 56.3 1000 56 C1063.3 55.7 1166.7 77.7 1200 82 L1200 180 Z'/></svg>") center/100% 100% no-repeat}
+html body .f-peaks::after{background:#070b18;mask:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 180' preserveAspectRatio='none'><path d='M0 180 L0 112 C25.0 109.3 95.0 103.7 150 96 C205.0 88.3 268.3 64.7 330 66 C391.7 67.3 455.0 105.3 520 104 C585.0 102.7 651.7 59.0 720 58 C788.3 57.0 870.0 95.0 930 98 C990.0 101.0 1035.0 76.7 1080 76 C1125.0 75.3 1180.0 91.0 1200 94 L1200 180 Z'/></svg>") center/100% 100% no-repeat;-webkit-mask:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 180' preserveAspectRatio='none'><path d='M0 180 L0 112 C25.0 109.3 95.0 103.7 150 96 C205.0 88.3 268.3 64.7 330 66 C391.7 67.3 455.0 105.3 520 104 C585.0 102.7 651.7 59.0 720 58 C788.3 57.0 870.0 95.0 930 98 C990.0 101.0 1035.0 76.7 1080 76 C1125.0 75.3 1180.0 91.0 1200 94 L1200 180 Z'/></svg>") center/100% 100% no-repeat}
+html body nav,html body nav.scrolled{
+  -webkit-backdrop-filter:blur(16px) saturate(1.7) brightness(1.06)!important;
+  backdrop-filter:blur(16px) saturate(1.7) brightness(1.06)!important;
+  border:1px solid rgba(255,255,255,.55)!important;
+  background:radial-gradient(130% 120% at 10% 0%,rgba(255,255,255,.55),transparent 60%),linear-gradient(135deg,rgba(255,255,255,.5),rgba(255,255,255,.24) 50%,rgba(255,255,255,.4))!important;
+  box-shadow:inset 1.5px 1.5px 1px rgba(255,255,255,.9),inset -1px -1px 1px rgba(255,255,255,.4),inset 0 0 22px rgba(255,255,255,.2),0 14px 34px -16px rgba(30,60,50,.35)!important}
+html[data-theme=dark] body nav,html[data-theme=dark] body nav.scrolled{
+  border-color:rgba(200,210,255,.2)!important;
+  background:radial-gradient(130% 120% at 10% 0%,rgba(190,200,255,.22),transparent 60%),linear-gradient(135deg,rgba(60,70,130,.45),rgba(14,18,44,.4) 50%,rgba(40,50,110,.45))!important;
+  box-shadow:inset 1.5px 1.5px 1px rgba(220,228,255,.4),inset -1px -1px 1px rgba(160,170,255,.14),inset 0 0 22px rgba(120,130,255,.08),0 14px 34px -16px rgba(0,0,0,.6)!important}
+html.lite body nav,html.lite body nav.scrolled{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+/* ===== menu garis tiga: panel kaca berkabut + kalender & tombol liquid glass ===== */
+html body .mobile-menu{background:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,.55))!important}
+html body .mobile-menu.open{-webkit-backdrop-filter:blur(24px) saturate(1.6);backdrop-filter:blur(24px) saturate(1.6)}
+html[data-theme=dark] body .mobile-menu{background:linear-gradient(180deg,rgba(8,12,34,.45),rgba(8,12,34,.7))!important}
+html:not([data-theme=dark]) body .mobile-menu ul a{color:var(--text-head)}
+html body .mm-calendar{
+  border:1px solid rgba(255,255,255,.6);
+  background:radial-gradient(130% 55% at 12% 0%,rgba(255,255,255,.6),transparent 58%),linear-gradient(0deg,color-mix(in srgb,var(--m1b) 26%,transparent),transparent 60%),linear-gradient(135deg,rgba(255,255,255,.6),rgba(255,255,255,.3) 50%,rgba(255,255,255,.46));
+  box-shadow:inset 1.5px 1.5px 1px rgba(255,255,255,.9),inset -1px -1px 1px rgba(255,255,255,.4),inset 0 0 26px rgba(255,255,255,.2),0 24px 50px -26px color-mix(in srgb,var(--m3) 60%,transparent)}
+html[data-theme=dark] body .mm-calendar{
+  border-color:rgba(200,210,255,.2);
+  background:radial-gradient(130% 55% at 12% 0%,rgba(190,200,255,.22),transparent 58%),linear-gradient(0deg,color-mix(in srgb,var(--m1b) 22%,transparent),transparent 60%),linear-gradient(135deg,rgba(60,70,130,.5),rgba(14,18,44,.45) 50%,rgba(40,50,110,.5));
+  box-shadow:inset 1.5px 1.5px 1px rgba(220,228,255,.4),inset -1px -1px 1px rgba(160,170,255,.14),inset 0 0 26px rgba(120,130,255,.08),0 24px 50px -26px rgba(0,0,0,.7)}
+html body .mm-cal-nav button,html body .mms-icon{
+  border:1px solid rgba(255,255,255,.6);
+  background:linear-gradient(135deg,rgba(255,255,255,.6),rgba(255,255,255,.22));
+  box-shadow:inset 1.5px 1.5px 1px rgba(255,255,255,.85),0 10px 22px -12px rgba(30,60,50,.4)}
+html[data-theme=dark] body .mm-cal-nav button,html[data-theme=dark] body .mms-icon{
+  border-color:rgba(200,210,255,.22);
+  background:linear-gradient(135deg,rgba(80,90,160,.5),rgba(20,26,60,.4));
+  box-shadow:inset 1.5px 1.5px 1px rgba(220,228,255,.35),0 10px 22px -12px rgba(0,0,0,.6)}
+html.lite body .mobile-menu.open{-webkit-backdrop-filter:none;backdrop-filter:none}
+html.lite body .mobile-menu{background:rgba(255,255,255,.95)!important}
+html.lite[data-theme=dark] body .mobile-menu{background:rgba(8,12,34,.95)!important}
+/* ===== debu bercahaya & balon udara (siluet) ===== */
+:root{--dust:#ffc94d;--dustg:rgba(255,184,64,.85);--bal:rgba(135,105,160,.55)}
+[data-theme=dark]{--dust:#d6e4ff;--dustg:rgba(150,170,255,.6);--bal:rgba(6,10,28,.82)}
+#stage .dust{position:absolute;z-index:3;width:var(--s);height:var(--s);border-radius:50%;background:var(--dust);box-shadow:0 0 calc(var(--s)*3) calc(var(--s)*.9) var(--dustg);left:var(--x);top:var(--y);opacity:0;pointer-events:none;will-change:transform,opacity;animation:dustf var(--d) ease-in-out var(--dl) infinite}
+@keyframes dustf{0%{transform:translate3d(0,0,0) scale(.5);opacity:0}15%{opacity:var(--o)}85%{opacity:var(--o)}100%{transform:translate3d(var(--dx),-130px,0) scale(1);opacity:0}}
+#stage .balloon{position:absolute;z-index:2;left:0;top:var(--y);width:var(--w);color:var(--bal);pointer-events:none;will-change:transform;animation:balx var(--d) linear var(--dl) infinite}
+#stage .balloon svg{display:block;width:100%;height:auto;transform-origin:50% 0;animation:balbob 7s ease-in-out infinite alternate}
+@keyframes balx{from{transform:translate3d(-16vw,0,0)}to{transform:translate3d(116vw,0,0)}}
+@keyframes balbob{from{transform:translateY(-5px) rotate(-2deg)}to{transform:translateY(6px) rotate(2deg)}}
+html.lite #stage .dust,html.lite #stage .balloon{display:none!important}
+html.scrolling #stage .dust,html.scrolling #stage .balloon,html.scrolling #stage .balloon svg,html.theme-swap #stage .dust,html.theme-swap #stage .balloon{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){#stage .dust,#stage .balloon,#stage .balloon svg{animation:none}#stage .dust{opacity:.5}#stage .balloon{transform:translateX(60vw)}}
+/* layar lebar: gunung dibuat lebih tinggi agar tetap terbaca sebagai pegunungan, bukan bukit rata */
+@media (min-aspect-ratio:6/5){
+html #stage .mtn.a{height:58%}
+html #stage .mtn.b{height:44%}
+html #stage .mtn.c{height:30%}
+}
 [data-theme=dark] body #orb{background:
   radial-gradient(circle at 64% 36%,rgba(0,0,40,.12) 0 6%,transparent 7%),
   radial-gradient(circle at 34% 62%,rgba(0,0,40,.10) 0 10%,transparent 11%),
@@ -1553,11 +1682,101 @@ html body .ff-chain .ff-step{font-family:Syne,'Instrument Sans',sans-serif!impor
 .ff-card.pre .ff-arrow:nth-of-type(2){transition-delay:.65s}
 .ff-card.pre .ff-last{transition-delay:.8s}
 .ff-card.pre .ff-link{transition:opacity .6s 1.15s,transform .25s}
+
+/* ===== V8: menu garis tiga — panel kabut gunung, kalender matahari/bulan, tombol kaca ===== */
+html body .mobile-menu{--orb1:#fff6c9;--orb2:#ffd36e;--orb3:#ffa23c;--orbtx:#4a2400;--orbglow:rgba(255,170,60,.65);--sun:#d9485e}
+html[data-theme=dark] body .mobile-menu{--orb1:#ffffff;--orb2:#d9e0ff;--orb3:#9aa8ff;--orbtx:#1a2250;--orbglow:rgba(160,175,255,.55);--sun:#ff8a9b}
+
+/* tombol: lingkaran kaca, sebahasa dengan navbar */
+html body .hamburger{width:38px;height:38px;min-width:38px;max-width:38px;border-radius:50%;padding:0 10px;gap:5px;
+  border:1px solid rgba(255,255,255,.6);
+  background:linear-gradient(135deg,rgba(255,255,255,.6),rgba(255,255,255,.22));
+  box-shadow:inset 1.5px 1.5px 1px rgba(255,255,255,.85),0 8px 18px -10px rgba(30,60,50,.45);
+  -webkit-backdrop-filter:none;backdrop-filter:none;
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1),border-color .3s}
+html[data-theme=dark] body .hamburger{border-color:rgba(200,210,255,.22);
+  background:linear-gradient(135deg,rgba(80,90,160,.5),rgba(20,26,60,.4));
+  box-shadow:inset 1.5px 1.5px 1px rgba(220,228,255,.35),0 8px 18px -10px rgba(0,0,0,.6)}
+html body .hamburger:active{transform:scale(.9)}
+html body .hamburger span{height:2px;background:var(--text-head)}
+html body .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+html body .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+html body .hamburger:focus-visible,html body .cal-bar button:focus-visible,html body .mobile-menu ul a:focus-visible,html body .mms-icon:focus-visible{outline:2px solid var(--accent-2);outline-offset:3px}
+
+/* panel: kaca melayang yang tumbuh dari pil navbar */
+html body .mobile-menu{
+  top:10px;left:10px;right:10px;width:auto;
+  max-height:calc(100vh - 20px);max-height:calc(100dvh - 20px);
+  border-radius:35px;padding:5.4rem 1.4rem 0;
+  transform:translateY(calc(-100% - 24px));
+  scrollbar-width:none;
+  border:1px solid rgba(255,255,255,.6);
+  background:radial-gradient(120% 38% at 10% 0%,rgba(255,255,255,.65),transparent 62%),linear-gradient(180deg,rgba(255,255,255,.52),rgba(255,255,255,.74))!important;
+  box-shadow:inset 1.5px 1.5px 1px rgba(255,255,255,.9),inset 0 0 30px rgba(255,255,255,.2),0 30px 60px -24px color-mix(in srgb,var(--m3) 70%,transparent)}
+html body .mobile-menu::-webkit-scrollbar{display:none}
+html body .mobile-menu.open{transform:translateY(0)}
+html[data-theme=dark] body .mobile-menu{
+  border-color:rgba(200,210,255,.2);
+  background:radial-gradient(120% 38% at 10% 0%,rgba(190,200,255,.2),transparent 62%),linear-gradient(180deg,rgba(26,32,78,.62),rgba(8,12,34,.84))!important;
+  box-shadow:inset 1.5px 1.5px 1px rgba(220,228,255,.4),inset 0 0 30px rgba(120,130,255,.08),0 30px 60px -24px rgba(0,0,0,.75)}
+@media(min-width:640px){html body .mobile-menu{left:auto;width:min(420px,calc(100vw - 20px))}}
+html body .menu-overlay{background:color-mix(in srgb,var(--m3) 30%,transparent)}
+html[data-theme=dark] body .menu-overlay{background:rgba(3,6,18,.55)}
+
+/* kalender: kaca tipis di dalam kaca, hari ini = matahari (terang) / bulan (gelap) */
+html body .mm-calendar{max-width:none;width:100%;margin-bottom:1.3rem;padding:1.05rem 1rem 1rem;border-radius:26px;gap:.55rem;
+  border:1px solid rgba(255,255,255,.7);
+  background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,.26));
+  box-shadow:inset 1.5px 1.5px 1px rgba(255,255,255,.9),0 18px 36px -24px color-mix(in srgb,var(--m3) 55%,transparent)}
+html[data-theme=dark] body .mm-calendar{border-color:rgba(200,210,255,.18);
+  background:linear-gradient(180deg,rgba(70,80,150,.4),rgba(14,18,44,.32));
+  box-shadow:inset 1.5px 1.5px 1px rgba(220,228,255,.35),0 18px 36px -24px rgba(0,0,0,.7)}
+html body .cal-top{margin-bottom:.35rem;align-items:center}
+html body .cal-date small{text-transform:none;letter-spacing:.02em;font-size:.74rem;margin-top:.1rem}
+html body .cal-bar{margin-bottom:.35rem}
+html body .cal-bar button{width:34px;height:34px;border:1px solid rgba(255,255,255,.65);
+  background:linear-gradient(135deg,rgba(255,255,255,.65),rgba(255,255,255,.25));
+  box-shadow:inset 1.5px 1.5px 1px rgba(255,255,255,.85),0 8px 18px -10px rgba(30,60,50,.4);
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
+html[data-theme=dark] body .cal-bar button{border-color:rgba(200,210,255,.22);
+  background:linear-gradient(135deg,rgba(80,90,160,.5),rgba(20,26,60,.4));
+  box-shadow:inset 1.5px 1.5px 1px rgba(220,228,255,.35),0 8px 18px -10px rgba(0,0,0,.6)}
+html body .cal-bar button:active{transform:scale(.88)}
+html body .mm-cal-grid{gap:3px}
+html body .mm-cal-dow{text-transform:none;letter-spacing:.02em;font-size:.68rem;font-weight:600;padding:.2rem 0 .3rem}
+html body .mm-cal-cell{border-radius:50%;font-size:.86rem}
+html body .mm-cal-cell.sun{color:var(--sun)}
+html body .mm-cal-cell.mm-cal-today{
+  background:radial-gradient(circle at 35% 30%,var(--orb1),var(--orb2) 48%,var(--orb3));
+  color:var(--orbtx);font-weight:700;
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--orb3) 24%,transparent),0 8px 20px -4px var(--orbglow)}
+
+/* tautan: lebih ringan, penanda bagian yang sedang dibuka */
+html body .mobile-menu ul li{margin-bottom:0}
+html body .mobile-menu ul li a{font-weight:500;font-size:clamp(1.9rem,8.4vw,2.5rem);letter-spacing:-.02em;line-height:1.22;padding:.1rem 0;display:flex;align-items:center}
+html body .mobile-menu ul li a::before{content:"";flex:none;width:0;height:.4em;margin-right:0;border-radius:50%;opacity:0;
+  background:radial-gradient(circle at 35% 30%,var(--orb1),var(--orb2) 48%,var(--orb3));box-shadow:0 0 14px var(--orbglow);
+  transition:width .45s cubic-bezier(.34,1.56,.64,1),margin .45s cubic-bezier(.34,1.56,.64,1),opacity .3s}
+html body .mobile-menu ul li a.here::before{width:.4em;margin-right:.5em;opacity:1}
+html body .mobile-menu-socials{margin-top:1.2rem}
+
+/* dasar panel: dua punggungan gunung mengikuti warna langit saat ini */
+html body .mm-ridge{position:relative;height:84px;margin:.4rem -1.4rem 0;overflow:hidden;pointer-events:none}
+html body .mm-ridge i{position:absolute;inset:0;display:block;opacity:0;transform:translateY(18px);
+  transition:transform .9s cubic-bezier(.16,1,.3,1),opacity .6s;
+  -webkit-mask:var(--rm) center/100% 100% no-repeat;mask:var(--rm) center/100% 100% no-repeat}
+html body .mm-ridge i:nth-child(1){--rm:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 90' preserveAspectRatio='none'%3E%3Cpath d='M0 90 L0 38 C40 30 70 14 110 16 C150 18 175 44 220 40 C265 36 290 10 335 12 C365 13 385 26 400 30 L400 90 Z'/%3E%3C/svg%3E");
+  background:linear-gradient(180deg,color-mix(in srgb,var(--m1b) 85%,transparent),color-mix(in srgb,var(--m2) 70%,transparent))}
+html body .mm-ridge i:nth-child(2){--rm:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 90' preserveAspectRatio='none'%3E%3Cpath d='M0 90 L0 58 C30 55 60 48 95 44 C140 39 165 62 210 62 C255 62 285 38 330 38 C362 38 385 48 400 52 L400 90 Z'/%3E%3C/svg%3E");
+  background:linear-gradient(180deg,color-mix(in srgb,var(--m2b) 80%,transparent),color-mix(in srgb,var(--m3) 88%,transparent))}
+html body .mobile-menu.open .mm-ridge i{opacity:1;transform:none}
+html body .mobile-menu.open .mm-ridge i:nth-child(1){transition-delay:.3s}
+html body .mobile-menu.open .mm-ridge i:nth-child(2){transition-delay:.42s}
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=Instrument+Sans:wght@400;500;600&display=swap">
 </head>
 <body>
-<div id="sky"><i class="k0"></i><i class="k1"></i><i class="k2"></i><i class="k3"></i></div><div id="prog"></div><div id="stage" aria-hidden="true"><i class="st" style="top:16%;left:-10%;width:60%"></i><i class="st" style="top:30%;left:40%;width:70%"></i><i class="st" style="top:55%;left:-20%;width:80%"></i><i class="st" style="top:72%;left:30%;width:50%"></i><i class="cl" style="top:11%;--s:1;--d:95s;--o:-20s"></i><i class="cl" style="top:33%;--s:.7;--d:130s;--o:-70s"></i><i class="cl" style="top:50%;--s:1.3;--d:160s;--o:-40s"></i><svg class="bd" style="top:20%;--d:26s;--o:-4s" viewBox="0 0 24 8"><path d="M0 6Q6 0 12 6Q18 0 24 6"/></svg><svg class="bd" style="top:28%;--d:34s;--o:-17s" viewBox="0 0 24 8"><path d="M0 6Q6 0 12 6Q18 0 24 6"/></svg><svg class="bd" style="top:16%;--d:30s;--o:-26s" viewBox="0 0 24 8"><path d="M0 6Q6 0 12 6Q18 0 24 6"/></svg><i class="tw" style="left:12%;top:14%;--o:0s"></i><i class="tw" style="left:30%;top:28%;--o:-1s"></i><i class="tw" style="left:48%;top:10%;--o:-2s"></i><i class="tw" style="left:66%;top:24%;--o:-0.5s"></i><i class="tw" style="left:82%;top:12%;--o:-1.5s"></i><i class="tw" style="left:90%;top:38%;--o:-2.5s"></i><i class="tw" style="left:22%;top:44%;--o:-0.8s"></i><i class="tw" style="left:58%;top:40%;--o:-1.2s"></i><div id="glow"></div><div id="orb"></div><div class="mtn a"><svg viewBox="0 0 1200 300" preserveAspectRatio="none"><path d="M0 300V150L120 90L230 140L360 60L470 130L600 80L720 150L860 70L980 135L1100 95L1200 140V300Z"/></svg></div><div class="mtn b"><svg viewBox="0 0 1200 300" preserveAspectRatio="none"><path d="M0 300V190L90 140L200 180L330 110L450 170L580 120L700 185L830 125L960 175L1080 135L1200 180V300Z"/></svg></div><div class="mtn c"><svg viewBox="0 0 1200 300" preserveAspectRatio="none"><path d="M0 300V230L140 185L260 225L400 170L540 220L680 180L820 228L960 190L1100 225L1200 205V300Z"/></svg></div></div><button id="orbBtn" aria-label="Ubah bentuk matahari">◐</button>
+<div id="sky"><i class="k0"></i><i class="k1"></i><i class="k2"></i><i class="k3"></i></div><div id="prog"></div><div id="stage" aria-hidden="true"><i class="st" style="top:16%;left:-10%;width:60%"></i><i class="st" style="top:30%;left:40%;width:70%"></i><i class="st" style="top:55%;left:-20%;width:80%"></i><i class="st" style="top:72%;left:30%;width:50%"></i><i class="cl" style="top:11%;--s:1;--d:95s;--o:-20s"></i><i class="cl" style="top:33%;--s:.7;--d:130s;--o:-70s"></i><i class="cl" style="top:50%;--s:1.3;--d:160s;--o:-40s"></i><svg class="bd" style="top:20%;--d:26s;--o:-4s" viewBox="0 0 24 8"><path d="M0 6Q6 0 12 6Q18 0 24 6"/></svg><svg class="bd" style="top:28%;--d:34s;--o:-17s" viewBox="0 0 24 8"><path d="M0 6Q6 0 12 6Q18 0 24 6"/></svg><svg class="bd" style="top:16%;--d:30s;--o:-26s" viewBox="0 0 24 8"><path d="M0 6Q6 0 12 6Q18 0 24 6"/></svg><i class="tw" style="left:12%;top:14%;--o:0s"></i><i class="tw" style="left:30%;top:28%;--o:-1s"></i><i class="tw" style="left:48%;top:10%;--o:-2s"></i><i class="tw" style="left:66%;top:24%;--o:-0.5s"></i><i class="tw" style="left:82%;top:12%;--o:-1.5s"></i><i class="tw" style="left:90%;top:38%;--o:-2.5s"></i><i class="tw" style="left:22%;top:44%;--o:-0.8s"></i><i class="tw" style="left:58%;top:40%;--o:-1.2s"></i><div id="glow"></div><div id="orb"></div><div class="mtn a"><svg viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="mga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--c)"/><stop offset=".4" style="stop-color:var(--c2)"/></linearGradient></defs><path class="g" d="M0 300 L0 160 C25.0 153.3 95.0 133.7 150 120 C205.0 106.3 268.3 76.7 330 78 C391.7 79.3 458.3 130.0 520 128 C581.7 126.0 636.7 67.0 700 66 C763.3 65.0 840.0 117.7 900 122 C960.0 126.3 1010.0 91.5 1060 92 C1110.0 92.5 1176.7 119.5 1200 125 L1200 300 Z"/></svg></div><div class="mtn b"><svg viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="mgb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--c)"/><stop offset=".4" style="stop-color:var(--c2)"/></linearGradient></defs><path class="g" d="M0 300 L0 200 C21.7 195.0 80.0 180.0 130 170 C180.0 160.0 243.3 138.0 300 140 C356.7 142.0 413.3 183.3 470 182 C526.7 180.7 581.7 133.0 640 132 C698.3 131.0 761.7 173.7 820 176 C878.3 178.3 926.7 144.3 990 146 C1053.3 147.7 1165.0 179.3 1200 186 L1200 300 Z"/><path d="M282.4 146L300 125.2L317.6 146ZM287.2 135.6L300 112.4L312.8 135.6ZM622.4 138L640 117.2L657.6 138ZM627.2 127.6L640 104.4L652.8 127.6ZM972.4 152L990 131.2L1007.6 152ZM977.2 141.6L990 118.4L1002.8 141.6Z"/></svg></div><div class="mtn c"><svg viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="mgc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--c)"/><stop offset=".4" style="stop-color:var(--c2)"/></linearGradient></defs><path class="g" d="M0 300 L0 240 C30.0 235.7 116.7 221.3 180 214 C243.3 206.7 316.7 193.0 380 196 C443.3 199.0 496.7 231.3 560 232 C623.3 232.7 693.3 201.0 760 200 C826.7 199.0 886.7 224.7 960 226 C1033.3 227.3 1160.0 211.0 1200 208 L1200 300 Z"/><path d="M168 219.1L190 193.1L212 219.1ZM174 206.1L190 177.1L206 206.1ZM358 202L380 176L402 202ZM364 189L380 160L396 189ZM738 206L760 180L782 206ZM744 193L760 164L776 193ZM938 232L960 206L982 232ZM944 219L960 190L976 219ZM1108 219.25L1130 193.25L1152 219.25ZM1114 206.25L1130 177.25L1146 206.25Z"/></svg></div></div><button id="orbBtn" aria-label="Ubah bentuk matahari">◐</button>
 
 <div id="cur"></div>
 <div id="cur-ring"></div>
@@ -1626,6 +1845,7 @@ html body .ff-chain .ff-step{font-family:Syne,'Instrument Sans',sans-serif!impor
       <svg viewBox="0 0 24 24"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.912 0 3.083 0 3.766c0 .683.375 5.594.617 6.409.806 2.712 3.669 3.633 6.31 3.332.181-.026.365-.05.554-.076-.284.045-.573.084-.865.117-3.55.401-6.716 1.887-2.57 6.652 4.554 5.223 6.249-1.121 7.145-4.412.024-.09.049-.181.073-.271.024.09.05.181.074.271.895 3.291 2.589 9.635 7.143 4.412 4.147-4.765.981-6.251-2.57-6.652a13.55 13.55 0 01-.865-.117c.189.026.373.05.554.076 2.64.301 5.504-.62 6.31-3.332.242-.815.618-5.726.618-6.409 0-.683-.14-1.854-.902-2.201-.66-.299-1.664-.62-4.301 1.24C16.046 4.747 13.087 8.686 12 10.8z"/></svg>
     </a>
   </div>
+  <div class="mm-ridge" aria-hidden="true"><i></i><i></i></div>
 </div>
 <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
 
@@ -2082,7 +2302,7 @@ function spawnEasterStars(){
   const T=document.getElementById('mmCalTitle'),C=document.getElementById('mmCalClock'),D=document.getElementById('calDay'),W=document.getElementById('calWeekday');
   const M=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
   const H=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'],K=['Sen','Sel','Rab','Kam','Jum','Sab','Min'];
-  const now=new Date();let y=now.getFullYear(),m=now.getMonth();
+  const now=new Date();let y=now.getFullYear(),m=now.getMonth(),lastDay=now.getDate();
   const cell=(t,c,tag)=>{const e=document.createElement('div');e.className=c;e.textContent=t;g.appendChild(e)};
   function render(){
     T.textContent=M[m]+' '+y;g.innerHTML='';
@@ -2095,7 +2315,7 @@ function spawnEasterStars(){
     }
     const rest=(7-(first+n)%7)%7;for(let i=1;i<=rest;i++)cell(i,'mm-cal-cell mm-cal-muted');
   }
-  function tick(){const t=new Date(),p=x=>String(x).padStart(2,'0');C.textContent=p(t.getHours())+':'+p(t.getMinutes())+':'+p(t.getSeconds());D.textContent=t.getDate();W.textContent=H[t.getDay()]}
+  function tick(){const t=new Date(),p=x=>String(x).padStart(2,'0');if(t.getDate()!==lastDay){lastDay=t.getDate();render()}C.textContent=p(t.getHours())+':'+p(t.getMinutes())+':'+p(t.getSeconds());D.textContent=t.getDate();W.textContent=H[t.getDay()]}
   document.getElementById('mmCalPrev').onclick=()=>{m--;if(m<0){m=11;y--}render()};
   document.getElementById('mmCalNext').onclick=()=>{m++;if(m>11){m=0;y++}render()};
   T.onclick=()=>{y=now.getFullYear();m=now.getMonth();render()};
@@ -2161,6 +2381,7 @@ function unlockBodyScroll(restore=true){
 }
 
 function closeMenu(navigating){
+  hamburger.setAttribute('aria-expanded','false');
   hamburger.classList.remove('open');
   mobileMenu.classList.remove('open');
   menuOverlay.classList.remove('show');
@@ -2181,8 +2402,20 @@ function goToSection(e,id){
   },50);
   return false;
 }
+function markCurrentSection(){
+  const mid=window.innerHeight*0.4;let cur='s1';
+  ['s1','s3','s4','s5','s6'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el&&el.getBoundingClientRect().top<=mid)cur=id;
+  });
+  mobileMenu.querySelectorAll('ul a').forEach(a=>a.classList.toggle('here',a.getAttribute('href')==='#'+cur));
+}
+hamburger.setAttribute('aria-expanded','false');
+hamburger.setAttribute('aria-label','Menu');
 hamburger.addEventListener('click',()=>{
   const opening=!mobileMenu.classList.contains('open');
+  hamburger.setAttribute('aria-expanded',opening?'true':'false');
+  if(opening)markCurrentSection();
   hamburger.classList.toggle('open');
   menuOverlay.classList.toggle('show');
   if(opening){
@@ -2855,6 +3088,25 @@ measure();drawOrb();
 const c=document.getElementById('ffCard');if(!c||!window.IntersectionObserver)return;
 c.classList.add('pre');
 new IntersectionObserver((es,o)=>{if(es[0].isIntersecting){c.classList.add('in');o.disconnect()}},{threshold:.5}).observe(c);
+})();
+</script>
+<script>
+/* ===== debu bercahaya + balon udara (dibuat sekali, animasi murni CSS) ===== */
+(function(){
+const st=document.getElementById('stage');if(!st)return;
+let seed=7;const r=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const f=document.createDocumentFragment();
+for(let i=0;i<16;i++){
+  const e=document.createElement('i');e.className='dust';
+  const sz=1.6+r()*2.4;
+  e.style.cssText='--x:'+(r()*96).toFixed(1)+'%;--y:'+(28+r()*58).toFixed(1)+'%;--s:'+sz.toFixed(1)+'px;--o:'+(.45+r()*.5).toFixed(2)+';--dx:'+((r()-.5)*70).toFixed(0)+'px;--d:'+(9+r()*10).toFixed(1)+'s;--dl:-'+(r()*18).toFixed(1)+'s';
+  f.appendChild(e);
+}
+const B='<svg viewBox="0 0 40 60" fill="currentColor" aria-hidden="true"><path d="M20 2C9 2 3 11 4 21c1 9 8 16 12 20h8c4-4 11-11 12-20C37 11 31 2 20 2Z"/><path d="M20 2C14 12 14 30 17 41M20 2C26 12 26 30 23 41" fill="none" stroke="rgba(255,255,255,.28)" stroke-width="1"/><path d="M16 41l-.6 5M24 41l.6 5" fill="none" stroke="currentColor" stroke-width="1"/><path d="M14.5 46h11l-1.2 7.5h-8.6Z"/></svg>';
+[['--y:37%;--w:34px;--d:150s;--dl:-60s'],['--y:48%;--w:20px;--d:230s;--dl:-170s']].forEach(v=>{
+  const e=document.createElement('div');e.className='balloon';e.style.cssText=v[0];e.innerHTML=B;f.appendChild(e);
+});
+st.appendChild(f);
 })();
 </script>
 </body>
