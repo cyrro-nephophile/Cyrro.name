@@ -248,6 +248,83 @@ h1.disp{animation:rise .8s cubic-bezier(.2,.8,.2,1) .05s both}
 @media (prefers-reduced-motion:reduce){
   .card.pl .tile,.card.tl .tile{animation:none!important}
 }
+
+/* ───────── player musik: dock melayang (UI v2) ───────── */
+body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
+.pl-dock{position:fixed;left:0;right:0;bottom:calc(10px + env(safe-area-inset-bottom,0px));margin:0 auto;width:min(calc(100% - 24px),660px);z-index:30;
+  background:linear-gradient(180deg,#141c14 0%,#0b0f0b 100%);color:#ccff00;border:3px solid #0a0a0a;box-shadow:6px 6px 0 #0a0a0a;
+  font-family:'JetBrains Mono',ui-monospace,monospace;animation:plFloat 3.2s ease-in-out infinite;overflow:hidden}
+@keyframes plFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.pl-top{display:flex;align-items:stretch;min-height:44px}
+.pl-cover{width:46px;flex:none;display:grid;place-items:center;color:#ccff00;background:#0e150e;border:0;border-right:3px solid #0a0a0a;cursor:pointer;padding:0;transition:background .15s,color .15s}
+.pl-cover svg{width:20px;height:20px}
+.pl-cover:hover{background:rgba(204,255,0,.16)}
+.pl-cover.on{background:#ccff00;color:#0a0a0a}
+.pl-cover.spin svg{animation:plPulse 1.2s ease-in-out infinite}
+@keyframes plPulse{50%{opacity:.4}}
+.pl-screen{flex:1;min-width:0;padding:5px 10px;display:grid;align-content:center;gap:2px}
+.pl-row1{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:10px;letter-spacing:.14em;color:rgba(204,255,0,.6);white-space:nowrap}
+#plStatus{display:inline-flex;align-items:center;gap:7px}
+#plStatus::before{content:'';width:7px;height:7px;background:rgba(204,255,0,.4);display:inline-block}
+#plStatus.live::before{background:#ccff00;animation:plBlink 1s steps(2,start) infinite}
+@keyframes plBlink{to{visibility:hidden}}
+.pl-time{font-variant-numeric:tabular-nums}
+.pl-row2{overflow:hidden;white-space:nowrap;font-weight:700;font-size:12px;letter-spacing:.04em;color:#ccff00}
+#plTitle{display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;vertical-align:bottom}
+#plTitle.marq{max-width:none;overflow:visible;text-overflow:clip;animation:plMarq 9s ease-in-out infinite alternate}
+@keyframes plMarq{0%,15%{transform:translateX(0)}85%,100%{transform:translateX(calc(-1 * var(--shift,0px)))}}
+.pl-keys{display:flex;border-left:3px solid #0a0a0a;flex:none}
+.pl-key{width:38px;min-height:44px;background:transparent;border:0;border-right:3px solid #0a0a0a;color:#ccff00;display:grid;place-items:center;cursor:pointer;padding:0;transition:background .15s,color .15s,transform .1s}
+.pl-key:last-child{border-right:0}
+.pl-key svg{width:17px;height:17px}
+.pl-key:hover:not(:disabled){background:rgba(204,255,0,.16)}
+.pl-key:active:not(:disabled){transform:scale(.94)}
+.pl-key.on{background:#ccff00;color:#0a0a0a}
+.pl-key:disabled{opacity:.35;cursor:not-allowed}
+.pl-play{width:48px;background:#ccff00;color:#0a0a0a}
+.pl-play:hover:not(:disabled){background:#e4ff7a}
+.pl-play svg{width:19px;height:19px}
+.pl-seek{display:block;width:100%;height:6px;margin:0;-webkit-appearance:none;appearance:none;border:0;border-top:3px solid #0a0a0a;cursor:pointer;
+  background:linear-gradient(90deg,#ccff00 var(--p,0%),#1c261c var(--p,0%))}
+.pl-seek::-webkit-slider-thumb{-webkit-appearance:none;width:0;height:0}
+.pl-seek::-moz-range-thumb{width:0;height:0;border:0}
+.pl-seek:disabled{opacity:.35;cursor:not-allowed}
+@media (max-width:420px){.pl-key{width:36px}.pl-play{width:42px}#plStatus{font-size:0;gap:0}#plStatus::before{width:8px;height:8px}.pl-row1{letter-spacing:.06em}.pl-screen{padding:8px 10px}}
+@media (prefers-reduced-motion:reduce){.pl-dock,#plTitle.marq,#plStatus.live::before,.pl-cover.spin svg{animation:none!important}}
+/* daftar lagu di bagian Musik */
+.pl-panel{background:#0b0f0b;color:#ccff00;border:3px solid #0a0a0a;box-shadow:6px 6px 0 #0a0a0a;font-family:'JetBrains Mono',ui-monospace,monospace}
+.pl-list{list-style:none;display:grid}
+.pl-list li{border-bottom:2px solid #1a221a}
+.pl-list li:last-child{border-bottom:0}
+.pl-item{width:100%;display:flex;align-items:center;gap:10px;text-align:left;padding:11px 12px;background:transparent;color:#ccff00;border:0;cursor:pointer;font:inherit}
+.pl-item .n{font-size:12px;min-width:26px;color:rgba(204,255,0,.6)}
+.pl-item .t{flex:1;min-width:0;display:grid}
+.pl-item .t b{font-weight:700;font-size:13px;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl-item .t small{font-size:11px;color:rgba(204,255,0,.55);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl-item:hover:not(.on){background:rgba(204,255,0,.08)}
+.pl-item.on{background:#ccff00;color:#0a0a0a}
+.pl-item.on .n,.pl-item.on .t small{color:#0a0a0a}
+.pl-empty{padding:12px;font-size:12px;color:rgba(204,255,0,.6)}
+.pl-empty[hidden]{display:none}
+.pl-vol{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:var(--mut)}
+.pl-vol input{width:120px;accent-color:#ccff00}
+
+.pl-drawer{display:grid;grid-template-rows:0fr;opacity:0;transform:translateY(12px);visibility:hidden;background:#0b0f0b;color:#ccff00;font-family:'JetBrains Mono',ui-monospace,monospace;
+  transition:grid-template-rows .34s cubic-bezier(.2,.8,.2,1),opacity .22s ease,transform .34s cubic-bezier(.2,.8,.2,1),visibility 0s linear .34s}
+.pl-drawer.open{grid-template-rows:1fr;opacity:1;transform:none;visibility:visible;transition:grid-template-rows .34s cubic-bezier(.2,.8,.2,1),opacity .26s ease .04s,transform .34s cubic-bezier(.2,.8,.2,1),visibility 0s}
+.pl-drawer-in{min-height:0;overflow:hidden;border-bottom:3px solid #0a0a0a;transition:border-color .2s}
+.pl-drawer:not(.open) .pl-drawer-in{border-bottom-color:transparent}
+.pl-scroll{max-height:min(48vh,340px);overflow-y:auto;overscroll-behavior:contain}
+.pl-scroll .pl-list li{animation:plRowIn .35s cubic-bezier(.2,.8,.2,1) both}
+.pl-drawer.open .pl-scroll .pl-list li:nth-child(1){animation-delay:.06s}
+.pl-drawer.open .pl-scroll .pl-list li:nth-child(2){animation-delay:.12s}
+.pl-drawer.open .pl-scroll .pl-list li:nth-child(3){animation-delay:.18s}
+.pl-drawer.open .pl-scroll .pl-list li:nth-child(4){animation-delay:.24s}
+.pl-drawer.open .pl-scroll .pl-list li:nth-child(n+5){animation-delay:.3s}
+@keyframes plRowIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.pl-drawer,.pl-drawer-in,.pl-scroll .pl-list li{transition:none!important;animation:none!important}}
+.pl-drawer .pl-vol{color:rgba(204,255,0,.7);justify-content:space-between;margin:0;padding:10px 12px;border-top:2px solid #1a221a}
+.pl-drawer .pl-vol input{width:50%}
 </style>
 </head>
 <body>
@@ -348,6 +425,31 @@ h1.disp{animation:rise .8s cubic-bezier(.2,.8,.2,1) .05s both}
     </ol>
   </section>
 </main>
+<div class="pl-dock" id="plWrap">
+  <div class="pl-drawer" id="plDrawer" aria-hidden="true" inert>
+    <div class="pl-drawer-in">
+      <div class="pl-scroll">
+        <ol class="pl-list" id="plList"></ol>
+        <p class="pl-empty" id="plEmpty">Belum ada lagu. Tambahkan lewat songs.json.</p>
+      </div>
+      <label class="pl-vol"><span>VOL</span><input type="range" id="plVol" min="0" max="1" step="0.01" value="0.8" aria-label="Volume"/></label>
+    </div>
+  </div>
+  <div class="pl-top">
+    <button class="pl-cover" id="plCover" type="button" aria-label="Daftar lagu" aria-expanded="false" aria-controls="plDrawer"></button>
+    <div class="pl-screen">
+      <div class="pl-row1"><span id="plStatus">READY</span><span class="pl-time"><span id="plCur">0:00</span> / <span id="plDur">0:00</span></span></div>
+      <div class="pl-row2"><span id="plTitle">BELUM ADA LAGU</span></div>
+    </div>
+    <div class="pl-keys">
+      <button class="pl-key" id="plRepeat" type="button" aria-label="Ulangi lagu" aria-pressed="false" disabled></button>
+      <button class="pl-key" id="plPrev" type="button" aria-label="Lagu sebelumnya" disabled></button>
+      <button class="pl-key pl-play" id="plPlay" type="button" aria-label="Putar" disabled></button>
+      <button class="pl-key" id="plNext" type="button" aria-label="Lagu berikutnya" disabled></button>
+    </div>
+  </div>
+  <input type="range" class="pl-seek" id="plSeek" min="0" max="1000" value="0" aria-label="Posisi lagu" disabled/>
+</div>
 
 <script>
 (function(){
@@ -431,6 +533,121 @@ h1.disp{animation:rise .8s cubic-bezier(.2,.8,.2,1) .05s both}
     }
     step();
   });
+})();
+</script>
+<script>
+(function(){
+  var audio=new Audio(),songs=[],idx=-1,dragging=false,repeatOn=false;
+  var $=function(id){return document.getElementById(id)};
+  var playBtn=$('plPlay'),prevBtn=$('plPrev'),nextBtn=$('plNext'),repBtn=$('plRepeat'),seek=$('plSeek'),vol=$('plVol');
+  var ICON={
+    play:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z" fill="currentColor"/></svg>',
+    pause:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg>',
+    prev:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="2.5" height="14" fill="currentColor"/><path d="M19 5v14L9 12z" fill="currentColor"/></svg>',
+    next:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="16.5" y="5" width="2.5" height="14" fill="currentColor"/><path d="M5 5v14l10-7z" fill="currentColor"/></svg>',
+    repeat:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    list:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h12M3 12h12M3 18h8" stroke="currentColor" stroke-width="2.4" fill="none"/><path d="M18 15V7l4 2" stroke="currentColor" stroke-width="2.4" fill="none"/></svg>'
+  };
+  playBtn.innerHTML=ICON.play;prevBtn.innerHTML=ICON.prev;nextBtn.innerHTML=ICON.next;repBtn.innerHTML=ICON.repeat;
+  $('plCover').innerHTML=ICON.list;
+  var drawer=$('plDrawer'),cover=$('plCover');
+  function setDrawer(open){
+    drawer.classList.toggle('open',open);
+    drawer.inert=!open;
+    drawer.setAttribute('aria-hidden',String(!open));
+    cover.setAttribute('aria-expanded',String(open));
+    cover.classList.toggle('on',open);
+  }
+  setDrawer(false);
+  cover.addEventListener('click',function(){setDrawer(!drawer.classList.contains('open'))});
+  document.addEventListener('click',function(e){
+    if(!drawer.classList.contains('open'))return;
+    if(!e.target.isConnected)return;
+    if(drawer.contains(e.target)||cover.contains(e.target))return;
+    setDrawer(false);
+  });
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')setDrawer(false)});
+  audio.preload='metadata';audio.volume=parseFloat(vol.value);
+
+  function setP(v){seek.style.setProperty('--p',(v/10)+'%')}
+  function fmt(t){if(!isFinite(t)||t<0)t=0;var m=Math.floor(t/60),s2=Math.floor(t%60);return m+':'+(s2<10?'0':'')+s2}
+  function setEnabled(on){[playBtn,prevBtn,nextBtn,repBtn].forEach(function(b){b.disabled=!on});seek.disabled=!on}
+  function setPlayIcon(){
+    var playing=idx>=0&&!audio.paused&&!audio.ended;
+    playBtn.innerHTML=playing?ICON.pause:ICON.play;
+    playBtn.setAttribute('aria-label',playing?'Jeda':'Putar');
+    $('plStatus').textContent=idx<0?'READY':(playing?'PLAYING':'PAUSED');
+    $('plCover').classList.toggle('spin',playing);
+    $('plStatus').classList.toggle('live',playing);
+  }
+  function renderList(){
+    var ol=$('plList');ol.innerHTML='';
+    songs.forEach(function(s,i){
+      var li=document.createElement('li');
+      var b=document.createElement('button');b.type='button';b.className='pl-item'+(i===idx?' on':'');
+      b.innerHTML='<span class="n"></span><span class="t"><b></b><small></small></span>';
+      b.querySelector('.n').textContent=String(i+1).padStart(2,'0');
+      b.querySelector('.t b').textContent=s.title||'Tanpa judul';
+      b.querySelector('.t small').textContent=s.artist||'—';
+      b.addEventListener('click',function(){playIndex(i,true)});
+      li.appendChild(b);ol.appendChild(li);
+    });
+  }
+  function showTrack(){
+    var s=songs[idx];
+    $('plTitle').textContent=s?((s.artist?s.artist+' // ':'')+(s.title||'Tanpa judul')).toUpperCase():'BELUM ADA LAGU';
+    var t=$('plTitle');t.classList.remove('marq');t.style.removeProperty('--shift');
+    requestAnimationFrame(function(){
+      var box=t.parentElement;
+      if(t.scrollWidth>box.clientWidth+2){t.style.setProperty('--shift',(t.scrollWidth-box.clientWidth+14)+'px');t.classList.add('marq')}
+    });
+    renderList();
+  }
+  function playIndex(i,autoplay){
+    if(!songs.length)return;
+    idx=(i+songs.length)%songs.length;
+    audio.src=songs[idx].file;
+    showTrack();
+    seek.value=0;$('plCur').textContent='0:00';$('plDur').textContent='0:00';
+    setP(0);
+    if(autoplay){var p=audio.play();if(p&&p.catch)p.catch(function(){});}
+  }
+  playBtn.addEventListener('click',function(){
+    if(idx<0){playIndex(0,true);return}
+    if(audio.paused){var p=audio.play();if(p&&p.catch)p.catch(function(){});}else audio.pause();
+  });
+  prevBtn.addEventListener('click',function(){playIndex(idx-1,true)});
+  nextBtn.addEventListener('click',function(){playIndex(idx+1,true)});
+  repBtn.addEventListener('click',function(){
+    repeatOn=!repeatOn;audio.loop=repeatOn;
+    repBtn.classList.toggle('on',repeatOn);repBtn.setAttribute('aria-pressed',String(repeatOn));
+  });
+  audio.addEventListener('ended',function(){playIndex(idx+1,true)});
+  audio.addEventListener('play',setPlayIcon);
+  audio.addEventListener('pause',setPlayIcon);
+  audio.addEventListener('loadedmetadata',function(){seek.disabled=false;$('plDur').textContent=fmt(audio.duration)});
+  audio.addEventListener('timeupdate',function(){
+    $('plCur').textContent=fmt(audio.currentTime);
+    if(!dragging&&isFinite(audio.duration)&&audio.duration>0)seek.value=Math.round(audio.currentTime/audio.duration*1000);
+    setP(seek.value);
+  });
+  seek.addEventListener('input',function(){dragging=true;setP(seek.value);if(isFinite(audio.duration))$('plCur').textContent=fmt(seek.value/1000*audio.duration)});
+  seek.addEventListener('change',function(){
+    if(isFinite(audio.duration))audio.currentTime=seek.value/1000*audio.duration;
+    dragging=false;
+  });
+  vol.addEventListener('input',function(){audio.volume=parseFloat(vol.value)});
+
+  fetch('songs.json',{cache:'no-cache'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()})
+    .then(function(data){
+      songs=Array.isArray(data)?data.filter(function(s){return s&&s.file}):[];
+      if(songs.length){$('plEmpty').hidden=true;setEnabled(true);seek.disabled=true;renderList();}
+      else{$('plEmpty').hidden=false;setEnabled(false);}
+    })
+    .catch(function(){
+      $('plEmpty').textContent='Daftar lagu belum bisa dimuat.';$('plEmpty').hidden=false;setEnabled(false);
+    });
+  setPlayIcon();
 })();
 </script>
 </body>
