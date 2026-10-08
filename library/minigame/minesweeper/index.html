@@ -548,7 +548,7 @@ h1{
   var SFX_CACHE={};
   function sfx(name){
     try{
-      var base=SFX_CACHE[name]||(SFX_CACHE[name]=new Audio('sfx/'+name));
+      var base=SFX_CACHE[name]||(SFX_CACHE[name]=new Audio(name));
       var a=base.cloneNode();a.volume=.6;
       var p=a.play();if(p&&p.catch)p.catch(function(){});
     }catch(e){}
