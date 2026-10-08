@@ -610,6 +610,7 @@ body.gm-open{overflow:hidden}
 </script>
 <script>
 (function(){
+  var BASE=location.href;   /* kunci alamat asal: pushState di overlay tidak boleh merusak path lagu */
   var audio=new Audio(),songs=[],idx=-1,dragging=false,repeatOn=false;
   var $=function(id){return document.getElementById(id)};
   var playBtn=$('plPlay'),prevBtn=$('plPrev'),nextBtn=$('plNext'),repBtn=$('plRepeat'),seek=$('plSeek'),vol=$('plVol');
@@ -680,9 +681,10 @@ body.gm-open{overflow:hidden}
   function playIndex(i,autoplay){
     if(!songs.length)return;
     var n=(i+songs.length)%songs.length;
-    var same=(n===idx)&&audio.getAttribute('src')===songs[n].file;
+    var src=new URL(songs[n].file,BASE).href;
+    var same=(n===idx)&&audio.src===src;
     idx=n;
-    if(!same){audio.src=songs[idx].file;}
+    if(!same){audio.src=src;}
     showTrack();
     seek.value=0;$('plCur').textContent='0:00';$('plDur').textContent='0:00';
     setP(0);
