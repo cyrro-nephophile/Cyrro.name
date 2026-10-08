@@ -258,14 +258,14 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
   background:linear-gradient(180deg,#141c14 0%,#0b0f0b 100%);color:#ccff00;border:3px solid #0a0a0a;box-shadow:6px 6px 0 #0a0a0a;
   font-family:'JetBrains Mono',ui-monospace,monospace;animation:plFloat 3.2s ease-in-out infinite;overflow:hidden}
 @keyframes plFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-.pl-top{display:flex;align-items:stretch;min-height:44px}
+.pl-top{display:flex;align-items:stretch;min-height:38px}
 .pl-cover{width:46px;flex:none;display:grid;place-items:center;color:#ccff00;background:#0e150e;border:0;border-right:3px solid #0a0a0a;cursor:pointer;padding:0;transition:background .15s,color .15s}
 .pl-cover svg{width:20px;height:20px}
 .pl-cover:hover{background:rgba(204,255,0,.16)}
 .pl-cover.on{background:#ccff00;color:#0a0a0a}
 .pl-cover.spin svg{animation:plPulse 1.2s ease-in-out infinite}
 @keyframes plPulse{50%{opacity:.4}}
-.pl-screen{flex:1;min-width:0;padding:5px 10px;display:grid;align-content:center;gap:2px}
+.pl-screen{flex:1;min-width:0;padding:3px 10px;display:grid;align-content:center;gap:2px}
 .pl-row1{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:10px;letter-spacing:.14em;color:rgba(204,255,0,.6);white-space:nowrap}
 #plStatus{display:inline-flex;align-items:center;gap:7px}
 #plStatus::before{content:'';width:7px;height:7px;background:rgba(204,255,0,.4);display:inline-block}
@@ -277,7 +277,7 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
 #plTitle.marq{max-width:none;overflow:visible;text-overflow:clip;animation:plMarq 9s ease-in-out infinite alternate}
 @keyframes plMarq{0%,15%{transform:translateX(0)}85%,100%{transform:translateX(calc(-1 * var(--shift,0px)))}}
 .pl-keys{display:flex;border-left:3px solid #0a0a0a;flex:none}
-.pl-key{width:38px;min-height:44px;background:transparent;border:0;border-right:3px solid #0a0a0a;color:#ccff00;display:grid;place-items:center;cursor:pointer;padding:0;transition:background .15s,color .15s,transform .1s}
+.pl-key{width:38px;min-height:38px;background:transparent;border:0;border-right:3px solid #0a0a0a;color:#ccff00;display:grid;place-items:center;cursor:pointer;padding:0;transition:background .15s,color .15s,transform .1s}
 .pl-key:last-child{border-right:0}
 .pl-key svg{width:17px;height:17px}
 .pl-key:hover:not(:disabled){background:rgba(204,255,0,.16)}
@@ -292,7 +292,7 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
 .pl-seek::-webkit-slider-thumb{-webkit-appearance:none;width:0;height:0}
 .pl-seek::-moz-range-thumb{width:0;height:0;border:0}
 .pl-seek:disabled{opacity:.35;cursor:not-allowed}
-@media (max-width:420px){.pl-key{width:36px}.pl-play{width:42px}#plStatus{font-size:0;gap:0}#plStatus::before{width:8px;height:8px}.pl-row1{letter-spacing:.06em}.pl-screen{padding:8px 10px}}
+@media (max-width:420px){.pl-key{width:36px}.pl-play{width:42px}#plStatus{font-size:0;gap:0}#plStatus::before{width:8px;height:8px}.pl-row1{letter-spacing:.06em}.pl-screen{padding:5px 10px}}
 @media (prefers-reduced-motion:reduce){.pl-dock,#plTitle.marq,#plStatus.live::before,.pl-cover.spin svg{animation:none!important}}
 /* daftar lagu di bagian Musik */
 .pl-panel{background:#0b0f0b;color:#ccff00;border:3px solid #0a0a0a;box-shadow:6px 6px 0 #0a0a0a;font-family:'JetBrains Mono',ui-monospace,monospace}
@@ -384,6 +384,8 @@ html.intro-on :is(body,main,.top,.ticker,.pl-dock,main *,.top *,.ticker *,.pl-do
 .gm-title{color:#fff;font-family:'Anton',Impact,sans-serif;text-transform:uppercase;font-size:22px;line-height:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .gm-frame{flex:1;width:100%;min-height:0;border:0;display:block;background:var(--bg)}
 body.gm-open{overflow:hidden}
+/* mobile: player bar lebih ramping */
+@media (max-width:639px){.pl-top{min-height:34px}.pl-key{min-height:34px}.pl-screen{padding:2px 8px;gap:0}.pl-row2{font-size:11px}}
 </style>
 </head>
 <body>
