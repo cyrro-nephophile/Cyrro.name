@@ -374,6 +374,16 @@ body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
 /* tahan animasi halaman sampai intro selesai */
 html.intro-on :is(body,main,.top,.ticker,.pl-dock,main *,.top *,.ticker *,.pl-dock *){animation-play-state:paused!important}
 @media (prefers-reduced-motion:reduce){#intro{display:none}}
+
+/* ───────── overlay mini game (iframe) ───────── */
+.gm{position:fixed;left:0;right:0;top:0;bottom:120px;z-index:25;display:flex;flex-direction:column;background:var(--bg)}
+.gm[hidden]{display:none}
+.gm-bar{display:flex;align-items:center;gap:12px;height:calc(env(safe-area-inset-top,0px) + 56px);padding:env(safe-area-inset-top,0px) 14px 0;background:#101510;border-bottom:4px solid #0a0a0a;flex:none}
+.gm-back{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;color:#0a0a0a;background:var(--lime);border:3px solid #0a0a0a;padding:8px 12px;box-shadow:3px 3px 0 #0a0a0a;cursor:pointer;white-space:nowrap}
+.gm-back:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 #0a0a0a}
+.gm-title{color:#fff;font-family:'Anton',Impact,sans-serif;text-transform:uppercase;font-size:22px;line-height:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gm-frame{flex:1;width:100%;min-height:0;border:0;display:block;background:var(--bg)}
+body.gm-open{overflow:hidden}
 </style>
 </head>
 <body>
@@ -482,6 +492,10 @@ html.intro-on :is(body,main,.top,.ticker,.pl-dock,main *,.top *,.ticker *,.pl-do
     </ol>
   </section>
 </main>
+<div class="gm" id="gmOverlay" hidden>
+  <div class="gm-bar"><button class="gm-back" id="gmBack" type="button">← BALIK</button><span class="gm-title" id="gmTitle"></span></div>
+  <iframe class="gm-frame" id="gmFrame" title="Mini game"></iframe>
+</div>
 <div class="pl-dock" id="plWrap">
   <div class="pl-drawer" id="plDrawer" aria-hidden="true" inert>
     <div class="pl-drawer-in">
@@ -496,7 +510,7 @@ html.intro-on :is(body,main,.top,.ticker,.pl-dock,main *,.top *,.ticker *,.pl-do
     <button class="pl-cover" id="plCover" type="button" aria-label="Daftar lagu" aria-expanded="false" aria-controls="plDrawer"></button>
     <div class="pl-screen">
       <div class="pl-row1"><span id="plStatus">READY</span><span class="pl-time"><span id="plCur">0:00</span> / <span id="plDur">0:00</span></span></div>
-      <div class="pl-row2"><span id="plTitle">BELUM ADA LAGU</span></div>
+      <div class="pl-row2"><span id="plTitle">PUTAR UNTUK MENDENGARKAN</span></div>
     </div>
     <div class="pl-keys">
       <button class="pl-key" id="plRepeat" type="button" aria-label="Ulangi lagu" aria-pressed="false" disabled></button>
@@ -652,7 +666,7 @@ html.intro-on :is(body,main,.top,.ticker,.pl-dock,main *,.top *,.ticker *,.pl-do
   }
   function showTrack(){
     var s=songs[idx];
-    $('plTitle').textContent=s?((s.artist?s.artist+' // ':'')+(s.title||'Tanpa judul')).toUpperCase():'BELUM ADA LAGU';
+    $('plTitle').textContent=s?((s.artist?s.artist+' // ':'')+(s.title||'Tanpa judul')).toUpperCase():'PUTAR UNTUK MENDENGARKAN';
     var t=$('plTitle');t.classList.remove('marq');t.style.removeProperty('--shift');
     requestAnimationFrame(function(){
       var box=t.parentElement;
@@ -751,6 +765,50 @@ html.intro-on :is(body,main,.top,.ticker,.pl-dock,main *,.top *,.ticker *,.pl-do
     },120);
   });
   at(5450,finish);
+})();
+</script>
+<script>
+(function(){
+  var ov=document.getElementById('gmOverlay'),fr=document.getElementById('gmFrame'),
+      ttl=document.getElementById('gmTitle'),bk=document.getElementById('gmBack'),
+      dockTop=document.querySelector('.pl-top'),open=false;
+  if(!ov||!fr)return;
+  function fit(){
+    var t=dockTop?dockTop.getBoundingClientRect().top:window.innerHeight-120;
+    ov.style.bottom=Math.max(0,window.innerHeight-t+12)+'px';
+  }
+  function show(href,name){
+    fit();
+    ttl.textContent=name;
+    fr.src=href;
+    ov.hidden=false;
+    document.body.classList.add('gm-open');
+    open=true;
+  }
+  function hide(){
+    open=false;
+    ov.hidden=true;
+    fr.src='about:blank';   /* hentikan game (dan suaranya) saat ditutup */
+    document.body.classList.remove('gm-open');
+  }
+  function close(){
+    if(!open)return;
+    if(history.state&&history.state.gm){history.back();}else{hide();}
+  }
+  document.querySelectorAll('a.card.mg').forEach(function(a){
+    a.addEventListener('click',function(e){
+      if(e.ctrlKey||e.metaKey||e.shiftKey||e.altKey||e.button===1)return;
+      e.preventDefault();
+      var href=a.getAttribute('href');
+      var b=a.querySelector('b');
+      show(href,b?b.textContent:'Mini game');
+      try{history.pushState({gm:1},'',href);}catch(_){}
+    });
+  });
+  bk.addEventListener('click',close);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+  window.addEventListener('popstate',function(){if(open)hide();});
+  window.addEventListener('resize',function(){if(open)fit();});
 })();
 </script>
 </body>
