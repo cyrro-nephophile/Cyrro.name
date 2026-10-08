@@ -674,18 +674,23 @@ body.gm-open{overflow:hidden}
     });
     renderList();
   }
+  function safePlay(){var p=audio.play();if(p&&p.catch)p.catch(function(){setPlayIcon()});}
   function playIndex(i,autoplay){
     if(!songs.length)return;
-    idx=(i+songs.length)%songs.length;
-    audio.src=songs[idx].file;
+    var n=(i+songs.length)%songs.length;
+    var same=(n===idx)&&audio.getAttribute('src')===songs[n].file;
+    idx=n;
+    if(!same){audio.src=songs[idx].file;}
     showTrack();
     seek.value=0;$('plCur').textContent='0:00';$('plDur').textContent='0:00';
     setP(0);
-    if(autoplay){var p=audio.play();if(p&&p.catch)p.catch(function(){});}
+    if(autoplay){if(same)audio.currentTime=0;safePlay();}
+    else setPlayIcon();
   }
   playBtn.addEventListener('click',function(){
     if(idx<0){playIndex(0,true);return}
-    if(audio.paused){var p=audio.play();if(p&&p.catch)p.catch(function(){});}else audio.pause();
+    if(audio.ended){audio.currentTime=0;safePlay();return}
+    if(audio.paused)safePlay();else audio.pause();
   });
   prevBtn.addEventListener('click',function(){playIndex(idx-1,true)});
   nextBtn.addEventListener('click',function(){playIndex(idx+1,true)});
@@ -693,7 +698,11 @@ body.gm-open{overflow:hidden}
     repeatOn=!repeatOn;audio.loop=repeatOn;
     repBtn.classList.toggle('on',repeatOn);repBtn.setAttribute('aria-pressed',String(repeatOn));
   });
-  audio.addEventListener('ended',function(){playIndex(idx+1,true)});
+  audio.addEventListener('ended',function(){
+    if(repeatOn){audio.currentTime=0;safePlay();return}
+    if(songs.length>1){playIndex(idx+1,true);return}
+    setPlayIcon();   /* satu lagu saja: berhenti di awal, tombol putar bisa dipakai lagi */
+  });
   audio.addEventListener('play',setPlayIcon);
   audio.addEventListener('pause',setPlayIcon);
   audio.addEventListener('loadedmetadata',function(){seek.disabled=false;$('plDur').textContent=fmt(audio.duration)});
@@ -777,10 +786,13 @@ body.gm-open{overflow:hidden}
     var t=dockTop?dockTop.getBoundingClientRect().top:window.innerHeight-120;
     ov.style.setProperty('--gm-b',Math.max(0,window.innerHeight-t+12)+'px');
   }
+  function go(href){
+    try{fr.contentWindow.location.replace(href);}catch(e){fr.src=href;}
+  }
   function show(href,name){
     fit();
     ttl.textContent=name;
-    fr.src=href;
+    go(href);
     ov.hidden=false;
     document.body.classList.add('gm-open');
     open=true;
@@ -788,7 +800,7 @@ body.gm-open{overflow:hidden}
   function hide(){
     open=false;
     ov.hidden=true;
-    fr.src='about:blank';   /* hentikan game (dan suaranya) saat ditutup */
+    go('about:blank');   /* hentikan game (dan suaranya) saat ditutup */
     document.body.classList.remove('gm-open');
   }
   function close(){
