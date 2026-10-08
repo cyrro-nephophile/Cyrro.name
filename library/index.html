@@ -1,15 +1,11 @@
 <!DOCTYPE html>
-<html lang="id" data-theme="light" data-sky="senja">
+<html lang="id" data-theme="light">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-<script>try{var _t=null,_s=null;try{_t=localStorage.getItem('theme');_s=localStorage.getItem('ms-sky')}catch(e){}
-var dk=_t==='dark'||(_t!=='light'&&matchMedia('(prefers-color-scheme: dark)').matches);
-var sky=(_s==='fajar'||_s==='senja'||_s==='malam')?_s:(dk?'malam':'senja');
-document.documentElement.setAttribute('data-sky',sky);
-document.documentElement.setAttribute('data-theme',sky==='malam'?'dark':'light');}catch(e){}</script>
+<script>document.documentElement.classList.add('js');try{var _t=localStorage.getItem('theme');if(_t==='dark'||_t==='light')document.documentElement.setAttribute('data-theme',_t);else if(matchMedia('(prefers-color-scheme: dark)').matches)document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
 <meta name="description" content="Library — koleksi favorit Cyrro: mini game, playlist, dan tool."/>
-<meta name="theme-color" content="#3b2a6b"/>
+<meta name="theme-color" content="#ccff00"/>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E"/>
 <title>Library — Cyrro</title>
 <link rel="canonical" href="https://cyrro.my.id/library/"/>
@@ -23,214 +19,418 @@ document.documentElement.setAttribute('data-theme',sky==='malam'?'dark':'light')
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Library — Cyrro"/>
 <meta name="twitter:description" content="Library — koleksi favorit Cyrro: mini game, playlist, dan tool."/>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400;1,700&family=Outfit:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;700&family=Outfit:wght@400;600&display=swap" rel="stylesheet"/>
 <style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-
-/* ───────── palet langit (ala Alto) ───────── */
-:root,[data-sky="senja"]{
-  --sun-x:68%;--sun-y:56%;--sun-size:150px;--sun-core:#fff1c9;--sun-glow:rgba(255,190,130,.75);
-  --d1:#a2527f;--d2:#7d3f78;--d3:#57296a;--d4:#341a4d;
-  --panel:rgba(52,26,77,.34);--panel-line:rgba(255,255,255,.22);
-  --star:0;--mist:rgba(255,196,150,.35);
-}
-[data-sky="fajar"]{
-  --sun-x:26%;--sun-y:62%;--sun-size:130px;--sun-core:#fffbe6;--sun-glow:rgba(255,236,190,.85);
-  --d1:#e3a0a4;--d2:#c4809c;--d3:#9a6592;--d4:#6d4c86;
-  --panel:rgba(86,56,120,.30);--panel-line:rgba(255,255,255,.3);
-  --star:0;--mist:rgba(255,240,215,.5);
-}
-[data-sky="malam"]{
-  --sun-x:74%;--sun-y:24%;--sun-size:84px;--sun-core:#f6f3ff;--sun-glow:rgba(170,170,255,.45);
-  --d1:#2f2f66;--d2:#222254;--d3:#16163c;--d4:#0b0b26;
-  --panel:rgba(8,8,32,.42);--panel-line:rgba(190,190,255,.2);
-  --star:1;--mist:rgba(120,110,200,.18);
-}
-
-html{overflow-x:hidden;scrollbar-gutter:stable;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fcfbf7;--fg:#0a0a0a;--mut:#4b5240;--line:#0a0a0a;--card:#fff;--lime:#ccff00;--pink:#ff0055;--soft:#ffe3ea;--sh:#0a0a0a}
+:root[data-theme="dark"]{--bg:#0a0a0a;--fg:#f4f4f0;--mut:#b9c0a8;--line:#f4f4f0;--card:#141414;--soft:#2a1019;--sh:#ccff00}
+html{scroll-behavior:smooth;overflow-x:hidden}
 body{
-  min-height:100vh;min-height:100dvh;background:#2a1b4a;color:#fff;
-  font-family:'Outfit',sans-serif;font-weight:300;overflow-x:hidden;
-  -webkit-tap-highlight-color:transparent;
+  min-height:100vh;min-height:100dvh;background:var(--bg);color:var(--fg);
+  font-family:'Outfit',system-ui,sans-serif;font-size:17px;line-height:1.5;overflow-x:hidden;
+  background-image:linear-gradient(rgba(10,10,10,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(10,10,10,.05) 1px,transparent 1px);
+  background-size:160px 160px;
+}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--pink);outline-offset:3px}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+.disp{font-family:'Anton','Impact',sans-serif;text-transform:uppercase;letter-spacing:.01em;line-height:.95}
+
+/* ───────── header ───────── */
+.top{
+  position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;
+  height:calc(env(safe-area-inset-top,0px) + 64px);padding:env(safe-area-inset-top,0px) 16px 0;
+  background:#101510;border-bottom:4px solid #0a0a0a;
+}
+.top .lg{width:44px;height:44px;display:grid;place-items:center;background:#fff;border:3px solid #0a0a0a;text-decoration:none;font-size:22px;flex:none}
+.top .wm{color:#fff;font-size:30px;flex:1;text-decoration:none}
+.top .wm i{font-style:normal;color:var(--lime)}
+.top .back{
+  font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;text-decoration:none;color:#0a0a0a;
+  background:var(--lime);border:3px solid #0a0a0a;padding:8px 12px;box-shadow:3px 3px 0 #0a0a0a;white-space:nowrap;
+}
+.top .back:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 #0a0a0a}
+.top .mode{
+  width:44px;height:44px;flex:none;cursor:pointer;background:#fff;border:3px solid #0a0a0a;
+  display:grid;place-items:center;box-shadow:3px 3px 0 #0a0a0a;
 }
 
-/* ───────── latar ───────── */
-#scene{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
-.sky{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease;}
-[data-sky="fajar"] .sky.fajar,[data-sky="senja"] .sky.senja,[data-sky="malam"] .sky.malam{opacity:1;}
-.sky.fajar{background:linear-gradient(180deg,#7eaed6 0%,#c3b6dc 38%,#f6c7c3 68%,#ffe9c9 100%);}
-.sky.senja{background:linear-gradient(180deg,#34265f 0%,#7a3f7e 34%,#d36f84 62%,#ffb47c 100%);}
-.sky.malam{background:linear-gradient(180deg,#05081a 0%,#0f1538 42%,#232155 76%,#3a3070 100%);}
+/* ───────── hero ───────── */
+main{max-width:1080px;margin:0 auto;padding:28px 18px 64px}
+.hero{position:relative;padding:8px 0 30px}
+.tags{display:flex;flex-wrap:wrap;gap:10px 12px;margin-bottom:20px}
+.tag{
+  display:inline-block;border:3px solid var(--line);background:var(--card);color:var(--fg);
+  padding:3px 10px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;
+  box-shadow:3px 3px 0 var(--sh);
+}
+.tag.l{background:#0a0a0a;color:var(--lime);border-color:#0a0a0a}
+.tag.y{background:var(--lime);color:#0a0a0a;border-color:#0a0a0a;box-shadow:3px 3px 0 #0a0a0a}
+.tag.r{transform:rotate(-1.5deg)}
+h1.disp{font-size:clamp(64px,15vw,150px)}
+.hl{
+  display:inline-block;border:3px solid var(--line);padding:2px 14px 0;color:var(--lime);
+  background:#0a0a0a;margin-top:8px;transform:rotate(-1.5deg);box-shadow:6px 6px 0 var(--sh);
+}
+.sub{margin-top:18px;max-width:40ch;font-size:1.05rem;color:var(--mut)}
 
-#stars{position:absolute;inset:0;opacity:var(--star);transition:opacity 1.2s ease;}
-#stars i{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;animation:tw 4s ease-in-out infinite;}
-@keyframes tw{0%,100%{opacity:.25}50%{opacity:.95}}
+/* ───────── section ───────── */
+.sec{margin-top:44px}
+.sh{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.sh h2{font-family:'Anton',Impact,sans-serif;text-transform:uppercase;font-size:clamp(30px,6vw,44px);line-height:1;font-weight:400;
+  background:var(--lime);color:#0a0a0a;border:3px solid #0a0a0a;padding:4px 14px 2px;transform:rotate(-1.5deg);box-shadow:5px 5px 0 #0a0a0a}
+.sh i{flex:1;height:3px;background:var(--line)}
+.sh span{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;border:3px solid var(--line);background:var(--card);padding:2px 8px;box-shadow:3px 3px 0 var(--sh);white-space:nowrap}
 
-#sun{
-  position:absolute;left:var(--sun-x);top:var(--sun-y);
-  width:var(--sun-size);height:var(--sun-size);margin:calc(var(--sun-size)/-2) 0 0 calc(var(--sun-size)/-2);
-  border-radius:50%;background:var(--sun-core);
-  box-shadow:0 0 0 calc(var(--sun-size)*.35) rgba(255,255,255,.07),0 0 calc(var(--sun-size)*1.4) calc(var(--sun-size)*.5) var(--sun-glow);
-  transition:left 1.4s ease,top 1.4s ease,width 1.4s ease,height 1.4s ease,margin 1.4s ease,background 1.2s,box-shadow 1.2s;
+.items{list-style:none;display:grid;gap:18px;grid-template-columns:1fr}
+@media (min-width:640px){.items.g2{grid-template-columns:1fr 1fr}}
+.items.g3{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.items.g3b{grid-template-columns:1fr;gap:14px}
+@media (min-width:640px){.items.g3b{grid-template-columns:1fr 1fr;gap:16px}}
+@media (min-width:900px){.items.g3b{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:639px){
+  }
+
+/* kartu dasar */
+.card{
+  position:relative;display:flex;align-items:center;gap:14px;min-width:0;text-decoration:none;
+  background:var(--card);border:3px solid var(--line);box-shadow:6px 6px 0 var(--sh);padding:14px;
+  transition:transform .15s ease,box-shadow .15s ease;
+}
+.card:hover{transform:translate(-3px,-3px);box-shadow:9px 9px 0 var(--sh)}
+.card:active{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--sh)}
+.card .n{
+  position:absolute;top:-14px;left:-10px;background:#0a0a0a;color:var(--lime);
+  font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px;padding:2px 7px;border:2px solid #0a0a0a;
+}
+.card .tx{flex:1;min-width:0;display:grid;gap:4px}
+.card b{font-family:'Anton',Impact,sans-serif;text-transform:uppercase;font-weight:400;font-size:22px;line-height:1.05;letter-spacing:.01em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card small{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .go{
+  width:40px;height:40px;flex:none;display:grid;place-items:center;border:3px solid #0a0a0a;background:var(--lime);color:#0a0a0a;
+  box-shadow:3px 3px 0 #0a0a0a;transition:transform .15s ease;
+}
+.card .go svg{width:16px;height:16px;fill:currentColor;margin-left:2px}
+.card .go.ext svg{margin-left:0;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.card:hover .go{transform:rotate(-8deg)}
+
+/* mini game: kartu vertikal, tile besar */
+.card.mg{flex-direction:column;align-items:stretch;gap:12px;padding:12px}
+.card.mg .tile{aspect-ratio:auto;height:150px;display:grid;place-items:center;font-size:44px;border:3px solid #0a0a0a;background:var(--lime);box-shadow:4px 4px 0 #0a0a0a}
+.card.mg .row{display:block;text-align:left}
+.card.mg b{font-size:clamp(16px,4.2vw,22px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card.mg small{display:block;margin-top:2px}
+
+/* playlist: sampul */
+.card.pl .tile{width:76px;height:76px;flex:none;border:3px solid #0a0a0a;box-shadow:4px 4px 0 #0a0a0a;overflow:hidden;background:var(--lime)}
+.card.pl .tile img{width:100%;height:100%;object-fit:cover;display:block}
+.badge{display:inline-flex;align-items:center;gap:6px;width:max-content;margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
+  padding:2px 8px 2px 4px;border:2px solid #0a0a0a;background:var(--card);color:var(--fg)}
+.badge svg{width:14px;height:14px;flex:none}
+.badge.yt{background:#ff0055;color:#fff}
+.badge.sp{background:#1ed760;color:#0a0a0a}
+
+/* tool: ikon kecil */
+.card.tl .tile{width:52px;height:52px;flex:none;display:grid;place-items:center;font-size:24px;border:3px solid #0a0a0a;background:#fff;box-shadow:3px 3px 0 #0a0a0a;overflow:hidden}
+.card.tl .tile img{width:30px;height:30px;object-fit:contain;display:none}
+.card.tl .tile.ok img{display:block}
+.card.tl .tile.ok .e{display:none}
+
+/* variasi warna sticker */
+.card.p1 .tile{background:var(--lime)}
+.card.p2 .n{background:var(--pink);color:#fff;border-color:#0a0a0a}
+.card.p3 .n{background:#fff;color:#0a0a0a}
+
+@media (prefers-reduced-motion:reduce){.card,.card .go{transition:none!important}}
+@media (max-width:520px){
+  .top .wm{font-size:26px}
+  .card b{font-size:19px}
+}
+@media (max-width:639px){
+  .items.g3{grid-template-columns:1fr;gap:16px}
+  .card.mg{flex-direction:row;align-items:center;gap:14px;padding:12px 14px 12px 12px}
+  .card.mg .tile{width:64px;height:64px;flex:none;aspect-ratio:auto;font-size:30px}
+  .card.mg .tx{flex:1;min-width:0}
+  .card.mg b{font-size:24px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 }
 
-.cloud{position:absolute;height:14px;border-radius:14px;background:var(--mist);filter:blur(7px);animation:drift linear infinite;transition:background 1.2s;}
-.cloud.c1{width:300px;top:20%;left:-320px;animation-duration:150s;}
-.cloud.c2{width:200px;top:34%;left:-220px;animation-duration:190s;animation-delay:-70s;height:10px;}
-.cloud.c3{width:380px;top:46%;left:-400px;animation-duration:230s;animation-delay:-150s;}
-@keyframes drift{to{transform:translateX(calc(100vw + 760px));}}
+/* ───────── animasi & efek ───────── */
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes popin{0%{opacity:0;transform:scale(.6)}70%{opacity:1;transform:scale(1.06)}100%{opacity:1;transform:none}}
+@keyframes pop{0%{opacity:0;transform:scale(.6) rotate(-8deg)}70%{opacity:1;transform:scale(1.07) rotate(-1deg)}100%{opacity:1;transform:rotate(-1.5deg)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-40px) rotate(-1.5deg)}to{opacity:1;transform:rotate(-1.5deg)}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes grid{to{background-position:160px 160px}}
+@keyframes tick{to{transform:translateX(-50%)}}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-7px) rotate(-3deg)}}
+@keyframes glitch{0%,90%,100%{transform:none;text-shadow:none}91%{transform:translate(-2px,1px);text-shadow:3px 0 #ff0055,-3px 0 #ccff00}93%{transform:translate(2px,-1px);text-shadow:-3px 0 #ff0055,3px 0 #ccff00}95%{transform:none;text-shadow:none}}
 
-.bird{position:absolute;width:18px;height:8px;opacity:.55;animation:fly linear infinite;}
-.bird svg{width:100%;height:100%;fill:none;stroke:#fff;stroke-width:1.4;stroke-linecap:round;}
-.bird.b1{top:26%;left:-30px;animation-duration:60s;animation-delay:-20s;}
-.bird.b2{top:30%;left:-30px;animation-duration:68s;animation-delay:-14s;transform:scale(.7);}
-@keyframes fly{
-  0%{transform:translate(0,0)}
-  50%{transform:translate(55vw,-26px)}
-  100%{transform:translate(112vw,8px)}
+body{animation:grid 14s linear infinite}
+
+/* ticker */
+.ticker{background:var(--lime);color:#0a0a0a;border-bottom:4px solid #0a0a0a;overflow:hidden;white-space:nowrap}
+.tk{display:inline-flex;animation:tick 28s linear infinite;font-family:'Anton',Impact,sans-serif;text-transform:uppercase;font-size:18px;letter-spacing:.05em;padding:9px 0;line-height:1;will-change:transform}
+.tk span{padding-right:28px}
+
+/* header */
+.top .wm{animation:glitch 5s steps(1) infinite}
+.top .mode{transition:transform .35s cubic-bezier(.3,1.6,.5,1)}
+.top .mode:hover{transform:rotate(20deg)}
+
+/* hero */
+h1.disp{animation:rise .8s cubic-bezier(.2,.8,.2,1) .05s both}
+.hl{animation:slideIn .9s cubic-bezier(.2,.8,.2,1) .25s both}
+.sub{animation:rise .8s cubic-bezier(.2,.8,.2,1) .45s both}
+.tags .tag{animation:popin .5s cubic-bezier(.3,1.4,.5,1) backwards;transition:transform .15s ease,box-shadow .15s ease}
+.tags .tag:nth-child(1){animation-delay:.1s}.tags .tag:nth-child(2){animation-delay:.2s}.tags .tag:nth-child(3){animation-delay:.3s}
+.tag:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--sh)}
+
+/* section */
+.sec{animation:rise .7s cubic-bezier(.2,.8,.2,1) both}
+.sec:nth-child(2){animation-delay:.2s}.sec:nth-child(3){animation-delay:.3s}.sec:nth-child(4){animation-delay:.4s}
+.sh h2{animation:pop .6s cubic-bezier(.3,1.4,.5,1) .15s backwards}
+.sh i{transform-origin:left;animation:grow .8s cubic-bezier(.2,.8,.2,1) .3s backwards}
+.sh span{animation:popin .5s cubic-bezier(.3,1.4,.5,1) .4s backwards}
+
+/* kartu */
+.js .items>li{opacity:0}
+.js .items>li.in{opacity:1;animation:rise .6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes sheen{from{background-position:130% 0}to{background-position:-30% 0}}
+.js .items>li.in .card::before{animation:sheen .9s ease .6s 1}
+.card:active::before{background-position:-30% 0}
+.card:active{transform:scale(.98)}
+.items>li:nth-child(1){animation-delay:.35s}.items>li:nth-child(2){animation-delay:.45s}
+.items>li:nth-child(3){animation-delay:.55s}.items>li:nth-child(4){animation-delay:.65s}
+.items>li:nth-child(5){animation-delay:.75s}.items>li:nth-child(6){animation-delay:.85s}
+.card>*{position:relative;z-index:1}
+.card::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:linear-gradient(105deg,transparent 40%,rgba(204,255,0,.65) 50%,transparent 60%) no-repeat;
+  background-size:250% 100%;background-position:130% 0;transition:background-position .7s ease}
+.card:hover::before{background-position:-30% 0}
+.card .n{z-index:2}
+.card .tile{transition:transform .35s cubic-bezier(.3,1.6,.5,1)}
+.card:hover .tile{transform:rotate(-6deg) scale(1.07)}
+.card.mg .tile{animation:bob 3.6s ease-in-out infinite}
+.items>li:nth-child(2) .card.mg .tile{animation-delay:-1.2s}
+.items>li:nth-child(3) .card.mg .tile{animation-delay:-2.4s}
+.card.mg:hover .tile{animation-play-state:paused;transform:rotate(-6deg) scale(1.07)}
+.card .n{animation:popin .5s cubic-bezier(.3,1.4,.5,1) .8s backwards}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
 }
 
-#dunes{position:absolute;left:-3%;right:-3%;bottom:0;height:46vh;min-height:260px;}
-#dunes svg{position:absolute;left:0;bottom:0;width:100%;height:100%;display:block;transition:transform .5s ease-out;}
-#dunes path{transition:fill 1.2s ease;}
-.l1 path{fill:var(--d1)}.l2 path{fill:var(--d2)}.l3 path{fill:var(--d3)}.l4 path{fill:var(--d4)}
-.l1{height:92%!important}.l2{height:74%!important}.l3{height:54%!important}.l4{height:34%!important}
+/* ───────── highlight yang ganti bahasa ───────── */
+.hl.cyc{display:inline-flex;align-items:center;max-width:100%;box-sizing:border-box}
+.hl.cyc .vis{display:block;white-space:nowrap;min-width:0;width:auto;height:auto;line-height:1.1;padding-bottom:4px}
+.hl.cyc{transition:width .3s cubic-bezier(.2,.8,.2,1)}
 
-/* ───────── nav ───────── */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:50;
-  padding:calc(1rem + env(safe-area-inset-top,0px)) 1.6rem 1rem;
-  display:flex;justify-content:space-between;align-items:center;
+/* glitch saat bahasa Indonesia tampil */
+@keyframes vglitch{
+  0%{transform:translate(0);text-shadow:none}
+  10%{transform:translate(-3px,1px);text-shadow:3px 0 #ff0055,-3px 0 #ccff00}
+  20%{transform:translate(3px,-1px);text-shadow:-3px 0 #ff0055,3px 0 #ccff00}
+  30%{transform:translate(-1px,0);text-shadow:none}
+  45%{transform:translate(2px,0);text-shadow:2px 0 #ff0055,-2px 0 #ccff00}
+  60%,100%{transform:none;text-shadow:none}
 }
-.nav-left{display:flex;align-items:center;gap:1rem;}
-.nav-logo{font-family:'Playfair Display',serif;font-style:italic;font-size:1.3rem;color:#fff;text-decoration:none;letter-spacing:.04em;text-shadow:0 1px 10px rgba(0,0,0,.25);}
-.pill{
-  font:400 .8rem 'Outfit',sans-serif;letter-spacing:.06em;color:#fff;text-decoration:none;cursor:pointer;
-  padding:.45rem .95rem;border-radius:999px;border:1px solid var(--panel-line);
-  background:rgba(255,255,255,.1);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  transition:background .25s,border-color .25s;
-}
-.pill:hover{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.5);}
+.hl.cyc .vis.gl{animation:vglitch .5s steps(1,end) 1}
 
-/* ───────── konten ───────── */
-main{
-  position:relative;z-index:1;max-width:980px;margin:0 auto;
-  padding:calc(5.6rem + env(safe-area-inset-top,0px)) 1rem calc(3rem + env(safe-area-inset-bottom,0px));
-  display:flex;flex-direction:column;align-items:center;
+/* ikon mengambang di playlist & tool, seperti mini game */
+.card.pl .tile,.card.tl .tile{animation:bob 3.6s ease-in-out infinite}
+.items>li:nth-child(2n) .card.pl .tile,.items>li:nth-child(2n) .card.tl .tile{animation-delay:-1.8s}
+.items>li:nth-child(3n) .card.pl .tile,.items>li:nth-child(3n) .card.tl .tile{animation-delay:-.9s}
+.items>li:nth-child(5n) .card.tl .tile{animation-delay:-2.7s}
+@media (hover:hover){
+  .card.pl:hover .tile,.card.tl:hover .tile{animation:none;transform:rotate(-6deg) scale(1.07)}
 }
-h1{
-  font-weight:200;font-size:clamp(2.1rem,9vw,3.6rem);letter-spacing:.14em;line-height:1.1;
-  text-align:center;text-shadow:0 2px 24px rgba(40,10,60,.35);
+@media (prefers-reduced-motion:reduce){
+  .card.pl .tile,.card.tl .tile{animation:none!important}
 }
-.sub{margin-top:.7rem;font-size:.92rem;letter-spacing:.04em;color:rgba(255,255,255,.82);text-align:center;max-width:34ch;line-height:1.55;text-shadow:0 1px 12px rgba(40,10,60,.35);}
-
-.panel{
-  margin-top:1.6rem;width:max-content;max-width:100%;min-width:min(100%,330px);
-  background:var(--panel);border:1px solid var(--panel-line);border-radius:26px;
-  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
-  padding:1.1rem;box-shadow:0 24px 70px rgba(20,5,40,.3),inset 0 1px 0 rgba(255,255,255,.14);
-  transition:background 1.2s,border-color 1.2s;
-}
-
-.sec{margin-top:1.8rem;width:min(100%,460px);padding:1.2rem 1.1rem 1.1rem;border-radius:28px;background:var(--panel);border:1px solid var(--panel-line);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 24px 70px rgba(20,5,40,.3),inset 0 1px 0 rgba(255,255,255,.14);}
-.sh{display:flex;align-items:center;gap:.8rem;padding:0 .4rem .9rem;}
-.sh h2{font-weight:300;font-size:1.2rem;letter-spacing:.12em;white-space:nowrap;}
-.sh i{flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.4),transparent);}
-.sh span{font-size:.72rem;letter-spacing:.1em;padding:.2rem .65rem;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid var(--panel-line);}
-.sec ol{list-style:none;display:grid;grid-template-columns:minmax(0,1fr);gap:.6rem;counter-reset:n;}
-.sec li{min-width:0;}
-.row{--a1:#ffb067;--a2:#ff7a8a;position:relative;display:flex;align-items:center;gap:.75rem;padding:.8rem .8rem .8rem .6rem;border-radius:20px;max-width:100%;color:#fff;text-decoration:none;overflow:hidden;counter-increment:n;background:linear-gradient(120deg,color-mix(in srgb,var(--a1) 22%,transparent),rgba(255,255,255,.07) 70%);border:1px solid rgba(255,255,255,.14);transition:transform .3s cubic-bezier(.3,1.4,.5,1),border-color .25s,background .25s;opacity:0;animation:rise .6s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:var(--d,0ms);}
-.row::before{content:'0'counter(n);min-width:2ch;font:200 1.9rem/1 'Outfit',sans-serif;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.55);text-align:center;}
-.row .tile{width:50px;height:50px;flex:none;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.65rem;background:linear-gradient(135deg,var(--a1),var(--a2));box-shadow:0 8px 22px color-mix(in srgb,var(--a2) 45%,transparent),inset 0 1px 0 rgba(255,255,255,.4);transition:transform .35s cubic-bezier(.3,1.6,.5,1);}
-.row .tx{flex:1;min-width:0;}
-.row b{display:block;font-weight:500;font-size:1.08rem;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.row small{display:inline-block;margin-top:.3rem;font-size:.66rem;letter-spacing:.08em;padding:.15rem .6rem;border-radius:999px;background:rgba(255,255,255,.14);color:rgba(255,255,255,.85);}
-.row .go{width:36px;height:36px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);transition:background .25s,color .25s,transform .3s cubic-bezier(.3,1.5,.5,1);}
-.row .go svg{width:14px;height:14px;fill:currentColor;margin-left:2px;}
-@media (hover:hover){.row:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.45);}.row:hover .tile{transform:rotate(-7deg) scale(1.08);}.row:hover .go{background:#fff;color:#4a2a63;transform:scale(1.08);}}
-.row:active{transform:scale(.97);}
-.r2{--a1:#b58cff;--a2:#ff8fb1;}.r4{--a1:#ff6b6b;--a2:#d1121f;}.r5{--a1:#4be58a;--a2:#0f8a3c;}
-.row .tile.img{padding:0;overflow:hidden;background:#2d0b40 center/cover no-repeat;}.r3{--a1:#6fd3c4;--a2:#7aa8ff;}
-.row small{display:inline-flex;align-items:center;gap:.4rem;padding:.18rem .65rem .18rem .35rem;font-size:.7rem;letter-spacing:.04em;}
-.row small svg{width:15px;height:15px;flex:none;}
-.row small.yt{background:rgba(255,70,70,.2);border:1px solid rgba(255,130,130,.55);}
-.row small.sp{background:rgba(30,215,96,.18);border:1px solid rgba(90,235,145,.55);}
-.row .go.ext svg{width:15px;height:15px;margin-left:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
-.row small{white-space:nowrap;}
-.row small.t{padding:.18rem .65rem;}
-.r6{--a1:#ffb067;--a2:#ff6f91;}.r7{--a1:#6fd3c4;--a2:#3a9bd9;}.r8{--a1:#7ab8ff;--a2:#3f5bd8;}.r9{--a1:#8be58a;--a2:#2f9e5b;}.r10{--a1:#ff8fb1;--a2:#9b5cff;}.r11{--a1:#9fb3c8;--a2:#4b5d78;}
-.tile.ico img{display:none;width:30px;height:30px;object-fit:contain;border-radius:6px;}.tile.ico.ok{background:rgba(255,255,255,.94);}.tile.ico.ok img{display:block;}.tile.ico.ok .e{display:none;}
-@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-@media (max-width:600px){
-  nav{padding-left:1rem;padding-right:1rem;}
-  .panel{padding:.8rem;border-radius:20px;}
-}
-@media (prefers-reduced-motion:reduce){.cloud,.bird,#stars i,.row,.row .tile,.row .go{animation:none!important;transition:none!important;opacity:1!important;}}
 </style>
 </head>
 <body>
-<div id="scene" aria-hidden="true">
-  <div class="sky fajar"></div><div class="sky senja"></div><div class="sky malam"></div>
-  <div id="stars"></div>
-  <div id="sun"></div>
-  <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
-  <div class="bird b1"><svg viewBox="0 0 18 8"><path d="M1 6 Q5 0 9 4 Q13 0 17 6"/></svg></div>
-  <div class="bird b2"><svg viewBox="0 0 18 8"><path d="M1 6 Q5 0 9 4 Q13 0 17 6"/></svg></div>
-  <div id="dunes">
-    <svg class="l1" data-p=".012" viewBox="0 0 1440 300" preserveAspectRatio="none"><path d="M0 120 C180 40 360 70 540 110 C720 150 900 60 1080 50 C1260 40 1360 90 1440 70 L1440 300 L0 300Z"/></svg>
-    <svg class="l2" data-p=".022" viewBox="0 0 1440 300" preserveAspectRatio="none"><path d="M0 90 C140 130 300 150 480 110 C660 70 820 30 1000 70 C1180 110 1300 140 1440 100 L1440 300 L0 300Z"/></svg>
-    <svg class="l3" data-p=".034" viewBox="0 0 1440 300" preserveAspectRatio="none"><path d="M0 110 C200 60 380 40 560 80 C740 120 900 150 1100 110 C1260 80 1360 60 1440 80 L1440 300 L0 300Z"/></svg>
-    <svg class="l4" data-p=".05" viewBox="0 0 1440 300" preserveAspectRatio="none"><path d="M0 70 C160 110 320 130 500 100 C700 66 860 44 1060 84 C1240 120 1340 110 1440 80 L1440 300 L0 300Z"/></svg>
-  </div>
-</div>
-
-<nav>
-  <div class="nav-left">
-    <a class="nav-logo" href="/">cyrro</a>
-    <button class="pill" id="skyBtn" title="Ganti suasana langit">senja</button>
-  </div>
-  <a class="pill" href="/">← kembali</a>
-</nav>
+<header class="top">
+  <a class="wm disp glitch" href="/">CYR<i>RO</i></a>
+  <button class="mode" id="modeBtn" type="button" aria-label="Ganti tema"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="#0a0a0a"/></svg></button>
+  <a class="back mono" href="/">← BALIK</a>
+</header>
+<div class="ticker" aria-hidden="true"><div class="tk"><span>MINI GAME ✦ PLAYLIST ✦ TOOL ✦ KOLEKSI FAVORIT ✦ MINI GAME ✦ PLAYLIST ✦ TOOL ✦ KOLEKSI FAVORIT ✦ </span><span>MINI GAME ✦ PLAYLIST ✦ TOOL ✦ KOLEKSI FAVORIT ✦ MINI GAME ✦ PLAYLIST ✦ TOOL ✦ KOLEKSI FAVORIT ✦ </span></div></div>
 
 <main>
-  <h1>library</h1>
-  <section class="sec">
-    <div class="sh"><h2>mini game</h2><i></i></div>
-    <ol>
-      <li><a class="row r1" style="--d:120ms" href="/library/minigame/sudoku/"><span class="tile" aria-hidden="true">🔢</span><span class="tx"><b>Sudoku</b></span><span class="go" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 3.5v13l11-6.5z"/></svg></span></a></li>
-      <li><a class="row r2" style="--d:240ms" href="/library/minigame/minesweeper/"><span class="tile" aria-hidden="true">💣</span><span class="tx"><b>Minesweeper</b></span><span class="go" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 3.5v13l11-6.5z"/></svg></span></a></li>
-      <li><a class="row r3" style="--d:360ms" href="/library/minigame/blockblast/"><span class="tile" aria-hidden="true">🧱</span><span class="tx"><b>Block Blast</b></span><span class="go" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 3.5v13l11-6.5z"/></svg></span></a></li>
+  <section class="hero">
+    <div class="tags">
+      <span class="tag l mono">✦ LIBRARY</span>
+      <span class="tag y mono">KOLEKSI FAVORIT</span>
+      <span class="tag mono">MINI GAME · PLAYLIST · TOOL</span>
+    </div>
+    <h1 class="disp">Library<br><span class="hl cyc" data-langs='["pilih aja.","choose one.","elige uno.","elegí uno.","kies er één.","διάλεξε ένα.","選んで。","고르세요.","चुनो।","选一个。"]'><span class="vis">pilih aja.</span></span></h1>
+    <p class="sub">Mini game buat isi waktu, playlist buat nemenin, dan tool yang sering aku pakai. Semua gratis.</p>
+  </section>
+
+  <section class="sec" aria-labelledby="h-mg">
+    <div class="sh"><h2 id="h-mg">Mini game</h2><i></i><span>03 GAME</span></div>
+    <ol class="items g3">
+      <li><a class="card mg p1" href="/library/minigame/sudoku/">
+        <span class="n">01</span>
+        <span class="tile" aria-hidden="true">🔢</span>
+        <span class="tx"><b>Sudoku</b><small>ISI ANGKA 1–9</small></span>
+      </a></li>
+      <li><a class="card mg p2" href="/library/minigame/minesweeper/">
+        <span class="n">02</span>
+        <span class="tile" aria-hidden="true">💣</span>
+        <span class="tx"><b>Minesweeper</b><small>HINDARI BOM</small></span>
+      </a></li>
+      <li><a class="card mg p3" href="/library/minigame/blockblast/">
+        <span class="n">03</span>
+        <span class="tile" aria-hidden="true">🧱</span>
+        <span class="tx"><b>Block Blast</b><small>SUSUN BLOK</small></span>
+      </a></li>
     </ol>
   </section>
-  <section class="sec">
-    <div class="sh"><h2>playlist</h2><i></i></div>
-    <ol>
-      <li><a class="row r4" style="--d:480ms" href="https://music.youtube.com/playlist?list=PLawOvByz18PU&amp;si=MDmpCU9IhHpjT03b" target="_blank" rel="noopener" aria-label="Cyrrokestra, buka di YouTube Music (tab baru)"><span class="tile img" style="background-image:url(/library/cyrrokestra.jpg)" aria-hidden="true"></span><span class="tx"><b>Cyrrokestra</b><small class="yt"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="5" width="22" height="14" rx="4.5" fill="#ff2d2d"/><path d="M10 9l5.5 3-5.5 3z" fill="#fff"/></svg>YouTube Music</small></span><span class="go ext" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 14L14 6M7.5 6H14v6.5"/></svg></span></a></li>
-      <li><a class="row r5" style="--d:600ms" href="https://open.spotify.com/playlist/2yy0e4HnH20DYLtXdOfDkO?si=Z7bQFwFsToe0qrIXph5giw&amp;utm_source=copy-link&amp;pi=LvbuxSW2Rv6uJ" target="_blank" rel="noopener" aria-label="Rock'n'Roll S, buka di Spotify (tab baru)"><span class="tile img" style="background-image:url(/library/rocknroll.jpg)" aria-hidden="true"></span><span class="tx"><b>Rock'n'Roll S</b><small class="sp"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#1ed760"/><path d="M6.2 9.3c3.8-1.1 8.4-.8 11.8 1.2M6.8 12.6c3.2-.9 7-.6 9.9 1M7.4 15.7c2.6-.7 5.4-.4 7.7.9" fill="none" stroke="#0b2a14" stroke-width="1.7" stroke-linecap="round"/></svg>Spotify</small></span><span class="go ext" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 14L14 6M7.5 6H14v6.5"/></svg></span></a></li>
+
+  <section class="sec" aria-labelledby="h-pl">
+    <div class="sh"><h2 id="h-pl">Playlist</h2><i></i><span>02 LIST</span></div>
+    <ol class="items g2">
+      <li><a class="card pl p2" href="https://music.youtube.com/playlist?list=PLawOvByz18PU&amp;si=MDmpCU9IhHpjT03b" target="_blank" rel="noopener" aria-label="Cyrrokestra, buka di YouTube Music (tab baru)">
+        <span class="n">04</span>
+        <span class="tile"><img src="/library/cyrrokestra.jpg" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"/></span>
+        <span class="tx"><b>Cyrrokestra</b>
+          <span class="badge yt"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="5" width="22" height="14" rx="4.5" fill="#fff"/><path d="M10 9l5.5 3-5.5 3z" fill="#ff0055"/></svg>YOUTUBE MUSIC</span>
+        </span>
+        <span class="go ext" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 14L14 6M7.5 6H14v6.5"/></svg></span>
+      </a></li>
+      <li><a class="card pl p1" href="https://open.spotify.com/playlist/2yy0e4HnH20DYLtXdOfDkO?si=Z7bQFwFsToe0qrIXph5giw&amp;utm_source=copy-link&amp;pi=LvbuxSW2Rv6uJ" target="_blank" rel="noopener" aria-label="Rock'n'Roll S, buka di Spotify (tab baru)">
+        <span class="n">05</span>
+        <span class="tile"><img src="/library/rocknroll.jpg" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"/></span>
+        <span class="tx"><b>Rock'n'Roll S</b>
+          <span class="badge sp"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#0a0a0a"/><path d="M6.2 9.3c3.8-1.1 8.4-.8 11.8 1.2M6.8 12.6c3.2-.9 7-.6 9.9 1M7.4 15.7c2.6-.7 5.4-.4 7.7.9" fill="none" stroke="#1ed760" stroke-width="1.7" stroke-linecap="round"/></svg>SPOTIFY</span>
+        </span>
+        <span class="go ext" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 14L14 6M7.5 6H14v6.5"/></svg></span>
+      </a></li>
     </ol>
   </section>
-  <section class="sec">
-    <div class="sh"><h2>tool</h2><i></i></div>
-    <ol>
-      <li><a class="row r6" style="--d:720ms" href="https://audioalter.com/" target="_blank" rel="noopener" aria-label="Audioalter, buka di tab baru"><span class="tile ico" aria-hidden="true"><span class="e">🎚️</span><img src="https://www.google.com/s2/favicons?domain=audioalter.com&amp;sz=128" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onload="this.parentNode.classList.add('ok')"></span><span class="tx"><b>Audioalter</b><small class="t">Edit audio online</small></span><span class="go ext" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 14L14 6M7.5 6H14v6.5"/></svg></span></a></li>
-      <li><a class="row r7" style="--d:840ms" href="https://toolixy.online/" target="_blank" rel="noopener" aria-label="Toolixy, buka di tab baru"><span class="tile ico" aria-hidden="true"><span class="e">🧰</span><img src="https://www.google.com/s2/favicons?domain=toolixy.online&amp;sz=128" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onload="this.parentNode.classList.add('ok')"></span><span class="tx"><b>Toolixy</b><small class="t">190+ tool online</small></span><span class="go ext" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 14L14 6M7.5 6H14v6.5"/></svg></span></a></li>
-      <li><a class="row r8" style="--d:960ms" href="https://cobalt.tools/" target="_blank" rel="noopener" aria-label="Cobalt, buka di tab baru"><span class="tile ico" aria-hidden="true"><span class="e">📥</span><img src="https://www.google.com/s2/favicons?domain=cobalt.tools&amp;sz=128" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onload="this.parentNode.classList.add('ok')"></span><span class="tx"><b>Cobalt</b><small class="t">Pengunduh media</small></span><span class="go ext" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 14L14 6M7.5 6H14v6.5"/></svg></span></a></li>
-      <li><a class="row r9" style="--d:1080ms" href="https://an1.com/" target="_blank" rel="noopener" aria-label="AN1, buka di tab baru"><span class="tile ico" aria-hidden="true"><span class="e">🤖</span><img src="https://www.google.com/s2/favicons?domain=an1.com&amp;sz=128" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onload="this.parentNode.classList.add('ok')"></span><span class="tx"><b>AN1</b><small class="t">Aplikasi Android</small></span><span class="go ext" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 14L14 6M7.5 6H14v6.5"/></svg></span></a></li>
-      <li><a class="row r10" style="--d:1200ms" href="https://snaptik.app/id3" target="_blank" rel="noopener" aria-label="SnapTik, buka di tab baru"><span class="tile ico" aria-hidden="true"><span class="e">🎬</span><img src="https://www.google.com/s2/favicons?domain=snaptik.app&amp;sz=128" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onload="this.parentNode.classList.add('ok')"></span><span class="tx"><b>SnapTik</b><small class="t">Unduh TikTok</small></span><span class="go ext" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 14L14 6M7.5 6H14v6.5"/></svg></span></a></li>
-      <li><a class="row r11" style="--d:1320ms" href="https://github.com/JunkFood02/Seal" target="_blank" rel="noopener" aria-label="Seal, buka di tab baru"><span class="tile ico" aria-hidden="true"><span class="e">🦭</span><img src="https://www.google.com/s2/favicons?domain=github.com&amp;sz=128" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onload="this.parentNode.classList.add('ok')"></span><span class="tx"><b>Seal</b><small class="t" style="display:inline-flex;align-items:center;gap:.35rem"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 7L3.5 12l5 5M15.5 7l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>GitHub</small></span><span class="go ext" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 14L14 6M7.5 6H14v6.5"/></svg></span></a></li>
+
+  <section class="sec" aria-labelledby="h-tl">
+    <div class="sh"><h2 id="h-tl">Tool</h2><i></i><span>06 TOOL · TAB BARU</span></div>
+    <ol class="items g3b">
+      <li><a class="card tl" href="https://audioalter.com/" target="_blank" rel="noopener" aria-label="Audioalter, buka di tab baru">
+        <span class="tile ico"><span class="e" aria-hidden="true">🎚️</span><img src="https://www.google.com/s2/favicons?domain=audioalter.com&amp;sz=128" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onload="this.parentNode.classList.add('ok')"/></span>
+        <span class="tx"><b>Audioalter</b><small>EDIT AUDIO ONLINE</small></span>
+        <span class="go ext" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 14L14 6M7.5 6H14v6.5"/></svg></span>
+      </a></li>
+      <li><a class="card tl" href="https://toolixy.online/" target="_blank" rel="noopener" aria-label="Toolixy, buka di tab baru">
+        <span class="tile ico"><span class="e" aria-hidden="true">🧰</span><img src="https://www.google.com/s2/favicons?domain=toolixy.online&amp;sz=128" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onload="this.parentNode.classList.add('ok')"/></span>
+        <span class="tx"><b>Toolixy</b><small>190+ TOOL ONLINE</small></span>
+        <span class="go ext" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 14L14 6M7.5 6H14v6.5"/></svg></span>
+      </a></li>
+      <li><a class="card tl" href="https://cobalt.tools/" target="_blank" rel="noopener" aria-label="Cobalt, buka di tab baru">
+        <span class="tile ico"><span class="e" aria-hidden="true">📥</span><img src="https://www.google.com/s2/favicons?domain=cobalt.tools&amp;sz=128" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onload="this.parentNode.classList.add('ok')"/></span>
+        <span class="tx"><b>Cobalt</b><small>PENGUNDUH MEDIA</small></span>
+        <span class="go ext" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 14L14 6M7.5 6H14v6.5"/></svg></span>
+      </a></li>
+      <li><a class="card tl" href="https://an1.com/" target="_blank" rel="noopener" aria-label="AN1, buka di tab baru">
+        <span class="tile ico"><span class="e" aria-hidden="true">🤖</span><img src="https://www.google.com/s2/favicons?domain=an1.com&amp;sz=128" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onload="this.parentNode.classList.add('ok')"/></span>
+        <span class="tx"><b>AN1</b><small>APLIKASI ANDROID</small></span>
+        <span class="go ext" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 14L14 6M7.5 6H14v6.5"/></svg></span>
+      </a></li>
+      <li><a class="card tl" href="https://snaptik.app/id3" target="_blank" rel="noopener" aria-label="SnapTik, buka di tab baru">
+        <span class="tile ico"><span class="e" aria-hidden="true">🎬</span><img src="https://www.google.com/s2/favicons?domain=snaptik.app&amp;sz=128" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onload="this.parentNode.classList.add('ok')"/></span>
+        <span class="tx"><b>SnapTik</b><small>UNDUH TIKTOK</small></span>
+        <span class="go ext" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 14L14 6M7.5 6H14v6.5"/></svg></span>
+      </a></li>
+      <li><a class="card tl" href="https://github.com/JunkFood02/Seal" target="_blank" rel="noopener" aria-label="Seal, buka di tab baru">
+        <span class="tile ico"><span class="e" aria-hidden="true">🦭</span><img src="https://www.google.com/s2/favicons?domain=github.com&amp;sz=128" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onload="this.parentNode.classList.add('ok')"/></span>
+        <span class="tx"><b>Seal</b><small>PENGUNDUH MEDIA · GITHUB</small></span>
+        <span class="go ext" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 14L14 6M7.5 6H14v6.5"/></svg></span>
+      </a></li>
     </ol>
   </section>
 </main>
+
 <script>
 (function(){
-  var root=document.documentElement,skyBtn=document.getElementById('skyBtn'),SKIES=['fajar','senja','malam'];
-  skyBtn.textContent=root.getAttribute('data-sky');
-  skyBtn.addEventListener('click',function(){var n=SKIES[(SKIES.indexOf(root.getAttribute('data-sky'))+1)%3];root.setAttribute('data-sky',n);root.setAttribute('data-theme',n==='malam'?'dark':'light');skyBtn.textContent=n;try{localStorage.setItem('ms-sky',n);localStorage.setItem('theme',n==='malam'?'dark':'light');}catch(e){}});
-  var st=document.getElementById('stars'),fr=document.createDocumentFragment();
-  for(var s=0;s<70;s++){var i=document.createElement('i');i.style.left=Math.random()*100+'%';i.style.top=Math.random()*62+'%';var z=Math.random()<.2?3:2;i.style.width=i.style.height=z+'px';i.style.animationDelay=-Math.random()*4+'s';i.style.animationDuration=3+Math.random()*3+'s';fr.appendChild(i);}
-  st.appendChild(fr);
-  var layers=document.querySelectorAll('#dunes svg');
-  window.addEventListener('pointermove',function(e){var dx=e.clientX/window.innerWidth-.5;layers.forEach(function(l){l.style.transform='translateX('+(-dx*parseFloat(l.dataset.p)*600)+'px)';});},{passive:true});
+  var root=document.documentElement,btn=document.getElementById('modeBtn');
+  function cur(){return root.getAttribute('data-theme')}
+  btn.addEventListener('click',function(){
+    var n=cur()==='dark'?'light':'dark';
+    root.setAttribute('data-theme',n);
+    try{localStorage.setItem('theme',n)}catch(e){}
+  });
+  var items=document.querySelectorAll('.items>li');
+  if(!('IntersectionObserver' in window)){items.forEach(function(li){li.classList.add('in')});return;}
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){en.target.classList.add('in');}
+      else{en.target.classList.remove('in');}
+    });
+  },{threshold:.15,rootMargin:'0px 0px -6% 0px'});
+  items.forEach(function(li){io.observe(li)});
+})();
+</script>
+<script>
+(function(){
+  var rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('.hl.cyc').forEach(function(el){
+    var L=JSON.parse(el.dataset.langs||'[]'); if(!L.length)return;
+    var vis=el.querySelector('.vis');
+    function textW(){
+      var r=document.createRange(); r.selectNodeContents(vis);
+      var tw=0; var rs=r.getClientRects(); for(var k=0;k<rs.length;k++) tw=Math.max(tw,rs[k].width);
+      return tw;
+    }
+    function fitW(){
+      var cs=getComputedStyle(el);
+      var extra=parseFloat(cs.paddingLeft)+parseFloat(cs.paddingRight)+parseFloat(cs.borderLeftWidth)+parseFloat(cs.borderRightWidth);
+      var cap=el.parentElement?el.parentElement.clientWidth:Infinity;
+      vis.style.fontSize='';
+      var tw=textW();
+      if(tw+extra+4>cap){
+        var fs=parseFloat(getComputedStyle(vis).fontSize);
+        vis.style.fontSize=(fs*(cap-extra-4)/tw)+'px';
+        tw=textW();
+      }
+      return Math.min(Math.ceil(tw+extra+4),cap);
+    }
+    function lockH(){
+      var mh=0;
+      L.forEach(function(w){vis.textContent=w;mh=Math.max(mh,el.offsetHeight)});
+      vis.textContent=L[0];
+      el.style.boxSizing='border-box';el.style.minHeight=mh+'px';
+      el.style.width=fitW()+'px';
+    }
+    if(document.fonts&&document.fonts.ready)document.fonts.ready.then(lockH);else lockH();
+    window.addEventListener('resize',function(){el.style.transition='none';el.style.width=fitW()+'px';requestAnimationFrame(function(){el.style.transition='width .3s cubic-bezier(.2,.8,.2,1)'})});
+    if(rm)return;
+    vis.style.transition='opacity .18s ease, transform .18s ease, filter .18s ease';
+    var i=0;
+    function swap(){
+      var w0=el.offsetWidth;
+      i=(i+1)%L.length;
+      vis.textContent=L[i];
+      var w1=fitW();
+      el.style.width=w0+'px';
+      void el.offsetWidth;
+      el.style.width=w1+'px';
+      vis.style.opacity='1';vis.style.transform='none';vis.style.filter='none';
+      if(i===0){
+        addGl();
+        setTimeout(function(){if(i===0)addGl();},1700);
+      }
+    }
+    function addGl(){
+      vis.classList.remove('gl');void vis.offsetWidth;vis.classList.add('gl');
+    }
+    function step(){
+      var wait=(i===0)?(3000+Math.random()*800):400;
+      setTimeout(function(){
+        vis.style.opacity='0';vis.style.transform='translateY(6px)';vis.style.filter='blur(2px)';
+        setTimeout(function(){swap();step();},180);
+      },wait);
+    }
+    step();
+  });
 })();
 </script>
 </body>
