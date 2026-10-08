@@ -492,6 +492,7 @@ h1{
   function showResult(kind,extra){
     var lose=kind==='lose';
     if(lose)sfx('lose.mp3');
+    else if(kind==='win')sfx('win.mp3');
     rIcon.innerHTML=FACES[kind];
     rTitle.textContent=lose?'Duar!':'Bukit aman';
     rText.textContent=lose
