@@ -46,7 +46,7 @@ body{
 .board{position:relative;background:#0a0a0a;border:4px solid #0a0a0a;box-shadow:8px 8px 0 var(--sh);padding:6px;flex:none}
 #board{display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);
   width:min(94vw,440px,max(260px,calc(100dvh - 330px)));aspect-ratio:1/1;touch-action:manipulation}
-.sq{position:relative;display:flex;align-items:center;justify-content:center;font-size:clamp(24px,8.6vw,42px);line-height:1;cursor:pointer;min-width:0;min-height:0;overflow:hidden}
+.sq{position:relative;display:flex;align-items:center;justify-content:center;font-size:clamp(24px,8.6vw,42px);line-height:1;cursor:pointer;min-width:0;min-height:0}
 .sq.l{background:var(--sq-l)}
 .sq.d{background:var(--sq-d)}
 .sq.sel{background:var(--sel)!important}
@@ -108,6 +108,32 @@ select:disabled{opacity:.5;cursor:not-allowed}
 @keyframes intro-grid{to{background-position:40px 40px}}
 @keyframes intro-glitch{0%,90%,100%{transform:none;text-shadow:none}91%{transform:translate(-3px,1px);text-shadow:3px 0 #ff0055,-3px 0 #ccff00}93%{transform:translate(3px,-1px);text-shadow:-3px 0 #ff0055,3px 0 #ccff00}95%{transform:none;text-shadow:none}}
 @media (prefers-reduced-motion: reduce){.intro{display:none}}
+
+/* ===== animasi ===== */
+.sq .w,.sq .b{position:relative;z-index:1;transition:transform .15s}
+.sq:active .w,.sq:active .b{transform:scale(.92)}
+.sq.sel .w,.sq.sel .b{animation:selBob 1.1s ease-in-out infinite}
+@keyframes selBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.mv{position:relative;z-index:5;animation:mvSlide .28s cubic-bezier(.2,.8,.2,1) both}
+@keyframes mvSlide{from{transform:translate(var(--dx),var(--dy))}to{transform:none}}
+.mv.cx{animation:mvSlide .28s cubic-bezier(.2,.8,.2,1) both,capPop .35s cubic-bezier(.2,.9,.3,1.3) .28s both}
+@keyframes capPop{0%{transform:scale(1)}40%{transform:scale(1.3)}100%{transform:scale(1)}}
+.sq.chk{background:#ff0055 !important;animation:chkPulse 1s ease-in-out infinite}
+@keyframes chkPulse{0%,100%{box-shadow:inset 0 0 0 0 rgba(255,255,255,0)}50%{box-shadow:inset 0 0 0 4px rgba(255,255,255,.9)}}
+.sq.hint::after{animation:hintIn .18s ease-out both}
+@keyframes hintIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+#status.flash{animation:statusFlash .45s ease-out}
+@keyframes statusFlash{0%{background:#ccff00;color:#0a0a0a}100%{background:transparent}}
+#moves.bump{animation:bump .3s ease-out}
+@keyframes bump{from{opacity:.2;transform:translateY(4px)}to{opacity:1;transform:none}}
+.toast:not([hidden]) .confirm-box{animation:toastIn .38s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes toastIn{from{opacity:0;transform:translateY(24px) scale(.96)}to{opacity:1;transform:none}}
+.board{transition:transform .2s}
+.board.shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:none}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+@media (prefers-reduced-motion: reduce){
+  .mv,.mv.cx,.sq.chk,.sq.hint::after,.sq.sel .w,.sq.sel .b,#status.flash,#moves.bump,.toast:not([hidden]) .confirm-box,.board.shake{animation:none!important}
+}
 </style>
 </head>
 <body>
@@ -217,6 +243,7 @@ let inSetup = true;        // true = layar pilih warna, belum main
 let onBest = null;
 let ignoreNext = false;
 let pending = null;        // aksi yang menunggu konfirmasi
+let pendingAnim = null;    // langkah terakhir untuk dianimasikan
 
 for (let i = 0; i <= 20; i++) $level.add(new Option('Level ' + i, i, false, i === 5));
 
@@ -252,6 +279,7 @@ function enterSetup() {
   busy = false; onBest = null;
   inSetup = true;
   resultShown = false;
+  pendingAnim = null;
   $result.hidden = true;
   selected = null; legal = [];
   game.reset();
@@ -263,6 +291,7 @@ function startGame() {
   if (!engineReady) return;
   inSetup = false;
   resultShown = false;
+  pendingAnim = null;
   playerColor = $color.value;
   game.reset();
   selected = null; legal = [];
@@ -279,7 +308,8 @@ function askEngine() {
   onBest = (mv) => {
     busy = false;
     if (mv && mv !== '(none)') {
-      game.move({ from: mv.slice(0, 2), to: mv.slice(2, 4), promotion: mv[4] || 'q' });
+      const m = game.move({ from: mv.slice(0, 2), to: mv.slice(2, 4), promotion: mv[4] || 'q' });
+      if (m) pendingAnim = { from: m.from, to: m.to, cap: !!m.captured };
     }
     update();
   };
@@ -307,6 +337,7 @@ function playerMove(from, to) {
   const m = game.move({ from, to, promotion: 'q' });
   selected = null; legal = [];
   if (!m) { update(); return; }
+  pendingAnim = { from: m.from, to: m.to, cap: !!m.captured };
   update();
   if (!game.game_over()) askEngine();
 }
@@ -387,7 +418,12 @@ function update() {
   $panelGame.hidden = false;
   $undo.disabled = busy;
   $status.textContent = busy ? 'Komputer lagi mikir…' : statusText();
-  if (!busy && game.game_over() && !resultShown) showResult();
+  $status.classList.remove('flash'); void $status.offsetWidth; $status.classList.add('flash');
+  if (!busy && game.game_over() && !resultShown) {
+    const lose = game.in_checkmate() && game.turn() === playerColor;
+    if (lose) { $board.classList.remove('shake'); void $board.offsetWidth; $board.classList.add('shake'); }
+    showResult();
+  }
 }
 
 function statusText() {
@@ -402,12 +438,29 @@ function statusText() {
   return (game.in_check() ? 'Skak! ' : '') + side + ', ' + who;
 }
 
+function coordOf(sq, flip) {
+  const f = FILES.indexOf(sq[0]);
+  const k = Number(sq[1]) - 1;
+  return { c: flip ? 7 - f : f, r: flip ? k : 7 - k };
+}
+
 function render() {
   $board.innerHTML = '';
   const flip = playerColor === 'b';
   const board = game.board();
   const hist = game.history({ verbose: true });
   const last = hist[hist.length - 1];
+  const anim = pendingAnim; pendingAnim = null;
+  const cellPx = $board.clientWidth / 8 || 40;
+  let checkSq = null;
+  if (game.in_check()) {
+    const kingColor = game.turn();
+    outer: for (let i = 0; i < 64; i++) {
+      const f = FILES[i % 8], rk = 8 - Math.floor(i / 8);
+      const p = game.get(f + rk);
+      if (p && p.type === 'k' && p.color === kingColor) { checkSq = f + rk; break outer; }
+    }
+  }
 
   for (let r = 0; r < 8; r++) {
     for (let c = 0; c < 8; c++) {
@@ -420,6 +473,8 @@ function render() {
       cell.className = 'sq ' + ((file + rank) % 2 === 0 ? 'd' : 'l');
       if (sq === selected) cell.classList.add('sel');
       if (last && (last.from === sq || last.to === sq)) cell.classList.add('last');
+      if (sq === checkSq) cell.classList.add('chk');
+      if (anim && sq === anim.to && anim.cap) cell.classList.add('capd');
       if (legal.some(m => m.to === sq)) {
         cell.classList.add('hint');
         if (piece) cell.classList.add('cap');
@@ -428,6 +483,13 @@ function render() {
         const s = document.createElement('span');
         s.className = piece.color === 'w' ? 'w' : 'b';
         s.textContent = GLYPH[piece.type];
+        if (anim && sq === anim.to) {
+          const a = coordOf(anim.from, flip), b = coordOf(anim.to, flip);
+          s.classList.add('mv');
+          if (anim.cap) s.classList.add('cx');
+          s.style.setProperty('--dx', ((a.c - b.c) * cellPx) + 'px');
+          s.style.setProperty('--dy', ((a.r - b.r) * cellPx) + 'px');
+        }
         cell.appendChild(s);
       }
       cell.onclick = () => onSquare(sq);
@@ -443,6 +505,7 @@ function renderMoves() {
     parts.push((i / 2 + 1) + '. ' + h[i] + (h[i + 1] ? ' ' + h[i + 1] : ''));
   }
   $moves.textContent = parts.join('   ') || 'Belum ada langkah';
+  $moves.classList.remove('bump'); void $moves.offsetWidth; $moves.classList.add('bump');
 }
 
 update();
