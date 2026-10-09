@@ -29,15 +29,16 @@ body{
 .top{width:100%;max-width:440px;display:flex;align-items:center;gap:12px;background:#101510;border:3px solid #0a0a0a;padding:8px 12px;box-shadow:6px 6px 0 var(--sh);flex:none}
 .back{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;text-decoration:none;color:#0a0a0a;background:var(--lime);border:3px solid #0a0a0a;padding:7px 11px;box-shadow:3px 3px 0 #0a0a0a;white-space:nowrap}
 .back:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 #0a0a0a}
-.ttl{flex:1;color:#fff;font-family:'Anton',Impact,sans-serif;text-transform:uppercase;font-weight:400;font-size:30px;line-height:1}
-.ttl i{font-style:normal;color:var(--lime)}
+.ttl{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff;font-family:'Anton',Impact,sans-serif;text-transform:uppercase;font-weight:400;font-size:24px;line-height:1}
+.ttl .vs{color:var(--lime)}
+.ttl .sf{color:var(--pink)}
 
 /* status & level */
-.hud{width:100%;max-width:440px;display:grid;grid-template-columns:1fr auto;gap:10px;flex:none}
-.stat{background:var(--card);border:3px solid #0a0a0a;box-shadow:4px 4px 0 var(--sh);padding:6px 10px;min-width:0}
+.hud{width:100%;max-width:440px;height:76px;display:grid;grid-template-columns:1fr auto;gap:10px;flex:none}
+.stat{background:var(--card);border:3px solid #0a0a0a;box-shadow:4px 4px 0 var(--sh);padding:6px 10px;min-width:0;min-height:0;overflow:hidden}
 .stat small{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--mut)}
 .stat b{display:block;font-family:'Anton',Impact,sans-serif;font-weight:400;font-size:22px;line-height:1.1;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#status{font-family:'Outfit',sans-serif;font-weight:600;font-size:1.05rem;line-height:1.3;white-space:normal}
+#status{font-family:'Outfit',sans-serif;font-weight:600;font-size:1.05rem;line-height:1.25;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .stat.lvl{padding:6px 8px;min-width:112px}
 .stat.lvl select{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;color:var(--fg);background:var(--card);border:2px solid #0a0a0a;padding:4px 6px;width:100%;border-radius:0;margin-top:2px}
 
@@ -75,8 +76,17 @@ select{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;col
 .confirm-box p{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;margin-bottom:16px}
 .confirm-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
+select:disabled{opacity:.5;cursor:not-allowed}
+/* pop up hasil: di bawah, papan tetap kelihatan */
+.toast{position:fixed;left:12px;right:12px;bottom:12px;z-index:50;display:flex;justify-content:center;pointer-events:none}
+.toast .confirm-box{pointer-events:auto;max-width:440px;width:100%;padding:14px 14px}
+.toast .confirm-box h3{font-size:26px;margin-bottom:6px}
+.toast .confirm-box p{margin-bottom:12px}
+.framed .toast{bottom:calc(120px + env(safe-area-inset-bottom,0px))}
+.confirm-box.win{border-color:var(--lime);box-shadow:5px 5px 0 var(--lime)}
+.confirm-box.lose{border-color:var(--pink);box-shadow:5px 5px 0 var(--pink)}
 /* langkah */
-.log{width:100%;max-width:440px;background:var(--card);border:3px solid #0a0a0a;box-shadow:4px 4px 0 var(--sh);padding:8px 10px;min-height:48px;max-height:70px;overflow:auto;flex:none}
+.log{width:100%;max-width:440px;height:76px;background:var(--card);border:3px solid #0a0a0a;box-shadow:4px 4px 0 var(--sh);padding:8px 10px;overflow:auto;flex:none}
 .log small{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--mut);margin-bottom:2px}
 #moves{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.6;color:var(--fg);word-break:break-word}
 </style>
@@ -84,7 +94,7 @@ select{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;col
 <body>
 <header class="top">
   <a class="back" href="/library/">← BALIK</a>
-  <div class="ttl">CAT<i>U</i>R</div>
+  <div class="ttl"><span class="t1">CATUR</span> <span class="vs">VS</span> <span class="sf">STOCKFISH</span></div>
 </header>
 
 <div class="hud">
@@ -129,6 +139,17 @@ select{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;col
   </div>
 </div>
 
+<div class="toast" id="result" hidden role="dialog" aria-labelledby="resTitle">
+  <div class="confirm-box" id="resBox">
+    <h3 id="resTitle">—</h3>
+    <p id="resText"></p>
+    <div class="confirm-row">
+      <button class="btn lime" id="resAgain" type="button">MAIN LAGI</button>
+      <button class="btn" id="resClose" type="button">TUTUP</button>
+    </div>
+  </div>
+</div>
+
 <script src="chess.js"></script>
 <script>
 if (window.top !== window.self) document.body.classList.add('framed');
@@ -154,6 +175,13 @@ const $panelGame  = document.getElementById('panelGame');
 const $confirm = document.getElementById('confirm');
 const $cfYes  = document.getElementById('cfYes');
 const $cfNo   = document.getElementById('cfNo');
+const $result = document.getElementById('result');
+const $resBox = document.getElementById('resBox');
+const $resTitle = document.getElementById('resTitle');
+const $resText  = document.getElementById('resText');
+const $resAgain = document.getElementById('resAgain');
+const $resClose = document.getElementById('resClose');
+let resultShown = false;
 
 let playerColor = 'w';
 let selected = null;
@@ -198,6 +226,8 @@ function enterSetup() {
   if (busy) { ignoreNext = true; engine.postMessage('stop'); }
   busy = false; onBest = null;
   inSetup = true;
+  resultShown = false;
+  $result.hidden = true;
   selected = null; legal = [];
   game.reset();
   playerColor = $color.value;
@@ -207,6 +237,7 @@ function enterSetup() {
 function startGame() {
   if (!engineReady) return;
   inSetup = false;
+  resultShown = false;
   playerColor = $color.value;
   game.reset();
   selected = null; legal = [];
@@ -278,6 +309,34 @@ $cfNo.onclick = () => {
   $confirm.hidden = true; pending = null;
 };
 
+$resAgain.onclick = () => { $result.hidden = true; enterSetup(); };
+$resClose.onclick = () => { $result.hidden = true; };
+
+function showResult() {
+  let title, text, cls;
+  if (game.in_checkmate()) {
+    const winner = game.turn() === 'w' ? 'b' : 'w';
+    if (winner === playerColor) {
+      title = 'KAMU MENANG!';
+      text = 'Skakmat. Kamu ngalahin Stockfish di level ' + $level.value + '.';
+      cls = 'win';
+    } else {
+      title = 'KALAH';
+      text = 'Stockfish ngalahin kamu di level ' + $level.value + '. Mau coba lagi?';
+      cls = 'lose';
+    }
+  } else {
+    title = 'SERI';
+    text = game.in_stalemate() ? 'Stalemate. Nggak ada yang menang.' : 'Partai seri. Nggak ada yang menang.';
+    cls = '';
+  }
+  $resTitle.textContent = title;
+  $resText.textContent = text;
+  $resBox.className = 'confirm-box ' + cls;
+  $result.hidden = false;
+  resultShown = true;
+}
+
 $startBtn.onclick = startGame;
 $newBtn.onclick = () => askRestart(enterSetup);
 $undo.onclick = undo;
@@ -291,6 +350,7 @@ $color.onchange = () => {
 function update() {
   render();
   renderMoves();
+  $level.disabled = !inSetup;
   if (inSetup) {
     $panelSetup.hidden = false;
     $panelGame.hidden = true;
@@ -302,6 +362,7 @@ function update() {
   $panelGame.hidden = false;
   $undo.disabled = busy;
   $status.textContent = busy ? 'Komputer lagi mikir…' : statusText();
+  if (!busy && game.game_over() && !resultShown) showResult();
 }
 
 function statusText() {
