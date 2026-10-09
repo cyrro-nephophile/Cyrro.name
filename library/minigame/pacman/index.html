@@ -54,7 +54,10 @@ canvas{display:block;width:100%;height:auto;touch-action:none;cursor:pointer}
 .confirm-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
 /* kontrol arah */
-.pad{display:grid;grid-template-columns:repeat(3,64px);grid-template-rows:repeat(2,60px);gap:8px;margin-top:20px}
+.pad{display:grid;grid-template-columns:repeat(3,52px);grid-template-rows:repeat(3,52px);gap:6px;margin-top:14px;justify-content:center}
+.pad span{display:block}
+.pad [data-dy="-1"]{position:relative;top:5px}
+.pad [data-dy="1"]{position:relative;top:-5px}
 .pad button{font-family:'Anton',Impact,sans-serif;font-size:26px;line-height:1;color:#0a0a0a;background:var(--lime);border:3px solid #0a0a0a;box-shadow:4px 4px 0 #0a0a0a;cursor:pointer;touch-action:manipulation;transition:transform .08s,box-shadow .08s}
 .pad button:active{transform:translate(3px,3px);box-shadow:1px 1px 0 #0a0a0a}
 .hint{margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;color:var(--mut);text-align:center}
@@ -94,10 +97,15 @@ canvas{display:block;width:100%;height:auto;touch-action:none;cursor:pointer}
 </div>
 
 <div class="pad" aria-label="Kontrol arah">
-  <span></span><button type="button" data-dx="0" data-dy="-1" aria-label="Atas">▲</button><span></span>
+  <span></span>
+  <button type="button" data-dx="0" data-dy="-1" aria-label="Atas">▲</button>
+  <span></span>
   <button type="button" data-dx="-1" data-dy="0" aria-label="Kiri">◀</button>
-  <button type="button" data-dx="0" data-dy="1" aria-label="Bawah">▼</button>
+  <span></span>
   <button type="button" data-dx="1" data-dy="0" aria-label="Kanan">▶</button>
+  <span></span>
+  <button type="button" data-dx="0" data-dy="1" aria-label="Bawah">▼</button>
+  <span></span>
 </div>
 
 <p class="hint">PANAH / WASD · SPASI = JEDA · SWIPE DI LAYAR</p>
