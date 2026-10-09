@@ -11,7 +11,8 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#fcfbf7;--fg:#0a0a0a;--mut:#4b5240;--card:#fff;--lime:#ccff00;--pink:#ff0055;--sh:#0a0a0a}
 :root[data-theme="dark"]{--bg:#0a0a0a;--fg:#f4f4f0;--mut:#b9c0a8;--card:#141414;--sh:#ccff00}
-html,body{min-height:100%}
+html,body{min-height:100%;overscroll-behavior:none}
+body{touch-action:none}
 body{
   min-height:100vh;min-height:100dvh;background:var(--bg);color:var(--fg);
   font-family:'Outfit',system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;
@@ -96,19 +97,9 @@ canvas{display:block;width:100%;height:auto;touch-action:none;cursor:pointer}
   </div>
 </div>
 
-<div class="pad" aria-label="Kontrol arah">
-  <span></span>
-  <button type="button" data-dx="0" data-dy="-1" aria-label="Atas">▲</button>
-  <span></span>
-  <button type="button" data-dx="-1" data-dy="0" aria-label="Kiri">◀</button>
-  <span></span>
-  <button type="button" data-dx="1" data-dy="0" aria-label="Kanan">▶</button>
-  <span></span>
-  <button type="button" data-dx="0" data-dy="1" aria-label="Bawah">▼</button>
-  <span></span>
-</div>
 
-<p class="hint">PANAH / WASD · SPASI = JEDA · SWIPE DI LAYAR</p>
+
+<p class="hint">GESER DI LAYAR UNTUK GERAK · KETUK UNTUK MULAI<br/>DI DESKTOP: PANAH / WASD · SPASI = JEDA · ENTER = MULAI</p>
 
 <script>
 (function(){
@@ -121,6 +112,8 @@ try{
   else if(matchMedia('(prefers-color-scheme: dark)').matches)root.setAttribute('data-theme','dark');
 }catch(e){}
 if(window.top!==window.self)document.body.classList.add('framed');
+document.addEventListener('touchmove',function(e){e.preventDefault();},{passive:false});
+document.addEventListener('gesturestart',function(e){e.preventDefault();});
 
 var COLS=21,ROWS=21,T=24,W=COLS*T,H=ROWS*T;
 var cv=document.getElementById('cv'),ctx=cv.getContext('2d');
