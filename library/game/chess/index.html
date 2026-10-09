@@ -1,62 +1,136 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="light">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Catur vs Stockfish · Cyrro</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="theme-color" content="#ccff00"/>
+<title>Catur — Cyrro Library</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%99%9E%3C/text%3E%3C/svg%3E"/>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;700&family=Outfit:wght@400;600&display=swap" rel="stylesheet"/>
 <style>
-  :root { --light:#eeeed2; --dark:#769656; --sel:#f6f669; --bg:#1b1d24; --panel:#262a33; --fg:#e9ebf0; --accent:#7aa2ff; }
-  * { box-sizing: border-box; }
-  html, body { margin:0; min-height:100%; }
-  body { background:var(--bg); color:var(--fg); font-family:system-ui,-apple-system,sans-serif;
-         display:flex; flex-direction:column; align-items:center; gap:12px;
-         padding:12px 10px 24px; -webkit-tap-highlight-color:transparent; }
-  h1 { font-size:1.15rem; margin:4px 0 0; }
-  #status { font-size:.95rem; min-height:1.4em; text-align:center; }
-  #board { display:grid; grid-template-columns:repeat(8,1fr); width:min(94vw,480px); aspect-ratio:1/1;
-           border-radius:6px; overflow:hidden; box-shadow:0 8px 24px rgba(0,0,0,.4); touch-action:manipulation; }
-  .sq { position:relative; display:flex; align-items:center; justify-content:center;
-        font-size:clamp(26px,9.5vw,46px); line-height:1; cursor:pointer; user-select:none; -webkit-user-select:none; }
-  .sq.l { background:var(--light); }
-  .sq.d { background:var(--dark); }
-  .sq.sel { background:var(--sel) !important; }
-  .sq.last::before { content:""; position:absolute; inset:0; background:rgba(255,230,0,.35); pointer-events:none; }
-  .sq.hint::after { content:""; position:absolute; width:30%; height:30%; border-radius:50%;
-                    background:rgba(0,0,0,.22); pointer-events:none; }
-  .sq.hint.cap::after { width:92%; height:92%; background:transparent; border:6px solid rgba(0,0,0,.22); }
-  .w { color:#fff; text-shadow:0 0 3px #000, 0 0 1px #000; }
-  .b { color:#111; }
-  .panel { background:var(--panel); border-radius:12px; padding:10px 12px; width:min(94vw,480px);
-           display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between; }
-  label { font-size:.85rem; opacity:.85; display:flex; align-items:center; gap:6px; }
-  select, button { font:inherit; font-size:.9rem; border:0; border-radius:8px; padding:8px 12px;
-                   background:#343a46; color:var(--fg); }
-  button { cursor:pointer; background:var(--accent); color:#0b1020; font-weight:600; }
-  button.ghost { background:#343a46; color:var(--fg); font-weight:500; }
-  button:disabled { opacity:.5; }
-  #moves { width:min(94vw,480px); font-size:.8rem; opacity:.7; max-height:90px; overflow:auto;
-           line-height:1.6; word-break:break-word; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fcfbf7;--fg:#0a0a0a;--mut:#4b5240;--card:#fff;--lime:#ccff00;--pink:#ff0055;--sh:#0a0a0a;--sq-l:#fcfbf7;--sq-d:#a3c23a;--sel:#ffb3c7}
+:root[data-theme="dark"]{--bg:#0a0a0a;--fg:#f4f4f0;--mut:#b9c0a8;--card:#141414;--sh:#ccff00;--sq-l:#e9ecd9;--sq-d:#6e8a1e;--sel:#ff0055}
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+body{
+  height:100vh;height:100dvh;background:var(--bg);color:var(--fg);
+  font-family:'Outfit',system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;gap:10px;
+  padding:12px 12px 16px;
+  user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;
+  background-image:linear-gradient(rgba(10,10,10,.14) 1.5px,transparent 1.5px),linear-gradient(90deg,rgba(10,10,10,.14) 1.5px,transparent 1.5px);
+  background-size:120px 120px;
+}
+:root[data-theme="dark"] body{background-image:linear-gradient(rgba(244,244,240,.1) 1.5px,transparent 1.5px),linear-gradient(90deg,rgba(244,244,240,.1) 1.5px,transparent 1.5px)}
+.framed .top{display:none}
+.framed{padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))!important}
+
+/* header */
+.top{width:100%;max-width:440px;display:flex;align-items:center;gap:12px;background:#101510;border:3px solid #0a0a0a;padding:8px 12px;box-shadow:6px 6px 0 var(--sh);flex:none}
+.back{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;text-decoration:none;color:#0a0a0a;background:var(--lime);border:3px solid #0a0a0a;padding:7px 11px;box-shadow:3px 3px 0 #0a0a0a;white-space:nowrap}
+.back:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 #0a0a0a}
+.ttl{flex:1;color:#fff;font-family:'Anton',Impact,sans-serif;text-transform:uppercase;font-weight:400;font-size:30px;line-height:1}
+.ttl i{font-style:normal;color:var(--lime)}
+
+/* status & stat */
+.hud{width:100%;max-width:440px;display:grid;grid-template-columns:1fr auto;gap:10px;flex:none}
+.stat{background:var(--card);border:3px solid #0a0a0a;box-shadow:4px 4px 0 var(--sh);padding:6px 10px;min-width:0}
+.stat small{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--mut)}
+.stat b{display:block;font-family:'Anton',Impact,sans-serif;font-weight:400;font-size:22px;line-height:1.1;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#status{font-size:1.05rem;font-family:'Outfit',sans-serif;font-weight:600;letter-spacing:0}
+.stat.lf b{color:var(--pink)}
+
+/* board */
+.board{position:relative;background:#0a0a0a;border:4px solid #0a0a0a;box-shadow:8px 8px 0 var(--sh);padding:6px;flex:none}
+#board{display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);
+  width:min(94vw,440px,max(260px,calc(100dvh - 330px)));aspect-ratio:1/1;touch-action:manipulation}
+.sq{position:relative;display:flex;align-items:center;justify-content:center;font-size:clamp(24px,8.6vw,42px);line-height:1;cursor:pointer;min-width:0;min-height:0;overflow:hidden}
+.sq.l{background:var(--sq-l)}
+.sq.d{background:var(--sq-d)}
+.sq.sel{background:var(--sel)!important}
+.sq.last::before{content:"";position:absolute;inset:0;background:rgba(204,255,0,.55);pointer-events:none}
+.sq.hint::after{content:"";position:absolute;width:30%;height:30%;border-radius:50%;background:rgba(10,10,10,.28);pointer-events:none}
+.sq.hint.cap::after{width:92%;height:92%;background:transparent;border:5px solid rgba(10,10,10,.28)}
+.w{color:#fff;text-shadow:0 0 3px #000,0 0 1px #000}
+.b{color:#111}
+
+/* controls */
+.panel{background:var(--card);border:3px solid #0a0a0a;box-shadow:6px 6px 0 var(--sh);padding:10px;width:100%;max-width:440px;display:grid;grid-template-columns:1fr 1fr;gap:10px;flex:none}
+.field{display:grid;gap:4px;min-width:0}
+.field small{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--mut)}
+select{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;color:var(--fg);background:var(--card);border:3px solid #0a0a0a;padding:8px 8px;box-shadow:3px 3px 0 var(--sh);border-radius:0;width:100%;appearance:auto}
+.btn{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;color:#0a0a0a;background:#fff;border:3px solid #0a0a0a;padding:10px 8px;box-shadow:3px 3px 0 #0a0a0a;cursor:pointer;white-space:nowrap;touch-action:manipulation;transition:transform .08s,box-shadow .08s}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 #0a0a0a}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #0a0a0a}
+.btn.lime{background:var(--lime)}
+.btn.pink{background:var(--pink);color:#fff}
+.btn:disabled{opacity:.45;cursor:default;transform:none;box-shadow:3px 3px 0 #0a0a0a}
+
+[hidden]{display:none!important}
+.stat.lvl{padding:6px 8px;min-width:112px}
+.stat.lvl select{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;color:var(--fg);background:var(--card);border:2px solid #0a0a0a;padding:4px 6px;width:100%;border-radius:0;margin-top:2px}
+.panel #undoBtn{align-self:end}
+.panel #newBtn{grid-column:1/-1}
+.confirm{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:rgba(10,10,10,.85);padding:16px}
+.confirm-box{background:#fcfbf7;color:#0a0a0a;border:3px solid #ccff00;box-shadow:5px 5px 0 #ccff00;padding:18px 16px;text-align:center;width:100%;max-width:340px}
+.confirm-box h3{font-family:'Anton',Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:30px;line-height:1;margin-bottom:8px}
+.confirm-box p{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;margin-bottom:16px}
+.confirm-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+/* langkah */
+.log{width:100%;max-width:440px;background:var(--card);border:3px solid #0a0a0a;box-shadow:4px 4px 0 var(--sh);padding:8px 10px;flex:0 1 auto;min-height:48px;max-height:70px;overflow:auto;flex:none}
+.log small{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--mut);margin-bottom:2px}
+#moves{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.6;color:var(--fg);word-break:break-word}
 </style>
 </head>
 <body>
+<header class="top">
+  <a class="back" href="/library/">← BALIK</a>
+  <div class="ttl">CAT<i>U</i>R</div>
+</header>
 
-<h1>♞ Catur vs Stockfish</h1>
-<div id="status">Memuat mesin…</div>
-<div id="board" aria-label="Papan catur"></div>
+<div class="hud">
+  <div class="stat"><small>STATUS</small><b id="status">Memuat mesin…</b></div>
+  <div class="stat lvl"><small>LEVEL</small><select id="level"></select></div>
+</div>
+
+<div class="board">
+  <div id="board" aria-label="Papan catur"></div>
+</div>
 
 <div class="panel">
-  <label>Level <select id="level"></select></label>
-  <label>Kamu <select id="color">
-    <option value="w">Putih</option>
-    <option value="b">Hitam</option>
-  </select></label>
-  <button id="newBtn">Mulai baru</button>
-  <button id="undoBtn" class="ghost">Undo</button>
+  <div class="field"><small>KAMU</small>
+    <select id="color">
+      <option value="w">Putih</option>
+      <option value="b">Hitam</option>
+    </select>
+  </div>
+  <button class="btn" id="undoBtn" type="button">UNDO</button>
+  <button class="btn lime" id="newBtn" type="button">MULAI BARU</button>
 </div>
-<div id="moves"></div>
+
+<div class="confirm" id="confirm" hidden role="dialog" aria-modal="true" aria-labelledby="cfTitle">
+  <div class="confirm-box">
+    <h3 id="cfTitle">ULANG GAME?</h3>
+    <p>Posisi sekarang bakal hilang.</p>
+    <div class="confirm-row">
+      <button class="btn pink" id="cfYes" type="button">YA, ULANG</button>
+      <button class="btn lime" id="cfNo" type="button">BATAL</button>
+    </div>
+  </div>
+</div>
+
+<div class="log">
+  <small>LANGKAH</small>
+  <div id="moves">Belum ada langkah</div>
+</div>
 
 <script src="chess.js"></script>
 <script>
+if (window.top !== window.self) document.body.classList.add('framed');
+try {
+  var _t = localStorage.getItem('theme');
+  if (_t === 'dark' || _t === 'light') document.documentElement.setAttribute('data-theme', _t);
+} catch (e) {}
+
 const FILES = 'abcdefgh';
 const GLYPH = { k:'♚', q:'♛', r:'♜', b:'♝', n:'♞', p:'♟' };
 
@@ -67,14 +141,18 @@ const $moves  = document.getElementById('moves');
 const $level  = document.getElementById('level');
 const $color  = document.getElementById('color');
 const $undo   = document.getElementById('undoBtn');
+const $confirm = document.getElementById('confirm');
+const $cfYes = document.getElementById('cfYes');
+const $cfNo  = document.getElementById('cfNo');
+let pending = null;
 
 let playerColor = 'w';
 let selected = null;
 let legal = [];
-let busy = false;         // engine lagi mikir
+let busy = false;
 let engineReady = false;
-let onBest = null;        // callback saat bestmove datang
-let ignoreNext = false;   // buang bestmove dari pencarian yang di-stop
+let onBest = null;
+let ignoreNext = false;
 
 for (let i = 0; i <= 20; i++) $level.add(new Option('Level ' + i, i, false, i === 5));
 
@@ -94,7 +172,7 @@ engine.onmessage = (e) => {
     if (cb) cb(mv);
   }
 };
-engine.onerror = () => { $status.textContent = 'Gagal load stockfish.js, cek nama dan lokasi filenya'; };
+engine.onerror = () => { $status.textContent = 'Gagal load stockfish.js'; };
 engine.postMessage('uci');
 engine.postMessage('isready');
 
@@ -118,7 +196,7 @@ function newGame() {
 function askEngine() {
   if (game.game_over()) return;
   busy = true;
-  const ms = 200 + Number($level.value) * 150;   // level 0 ~0.2s, level 20 ~3.2s
+  const ms = 200 + Number($level.value) * 150;
   onBest = (mv) => {
     busy = false;
     if (mv && mv !== '(none)') {
@@ -192,7 +270,7 @@ function render() {
   for (let r = 0; r < 8; r++) {
     for (let c = 0; c < 8; c++) {
       const file = flip ? 7 - c : c;
-      const rank = flip ? r : 7 - r;          // 0 = rank 1
+      const rank = flip ? r : 7 - r;
       const sq = FILES[file] + (rank + 1);
       const piece = board[7 - rank][file];
 
@@ -225,10 +303,23 @@ function renderMoves() {
   $moves.textContent = parts.join('   ') || 'Belum ada langkah';
 }
 
-document.getElementById('newBtn').onclick = newGame;
+function askRestart(action) {
+  if (game.history().length === 0) { action(); return; }
+  pending = action;
+  $confirm.hidden = false;
+}
+$cfYes.onclick = () => {
+  $confirm.hidden = true;
+  const a = pending; pending = null;
+  if (a) a();
+};
+$cfNo.onclick = () => {
+  $confirm.hidden = true; pending = null;
+  $color.value = playerColor;
+};
+document.getElementById('newBtn').onclick = () => askRestart(newGame);
+$color.onchange = () => askRestart(newGame);
 $undo.onclick = undo;
-$color.onchange = newGame;
-$status.textContent = 'Memuat mesin…';
 </script>
 </body>
-  </html>
+</html>
