@@ -416,7 +416,7 @@ body.gm-open{overflow:hidden}
   </section>
 
   <section class="sec" aria-labelledby="h-mg">
-    <div class="sh"><h2 id="h-mg">Mini game</h2><i></i><span>04 GAME</span></div>
+    <div class="sh"><h2 id="h-mg">Mini game</h2><i></i><span>05 GAME</span></div>
     <ol class="items g3">
       <li><a class="card mg p1" href="/library/minigame/sudoku/">
         <span class="n">01</span>
@@ -437,6 +437,11 @@ body.gm-open{overflow:hidden}
         <span class="n">04</span>
         <span class="tile" aria-hidden="true">🟡</span>
         <span class="tx"><b>Pac-Man</b><small>MAKAN TITIK, HINDARI HANTU</small></span>
+      </a></li>
+      <li><a class="card mg p2" href="/library/minigame/tetris/">
+        <span class="n">05</span>
+        <span class="tile" aria-hidden="true">🟦</span>
+        <span class="tx"><b>Tetris</b><small>SUSUN BALOK, BERSIHKAN BARIS</small></span>
       </a></li>
     </ol>
   </section>
@@ -768,7 +773,7 @@ body.gm-open{overflow:hidden}
     (function(item){
       at(t,function(){
         word.className='in-word swap';
-        setTimeout(function(){word.textContent=item[0];word.style.color=item[1];word.className='in-word'},120);
+        setTimeout(function(){word.textContent=item[0];word.style.color=item[1];word.className='in-word glitch'},120);
       });
     })(WORDS[n%WORDS.length]);
     n++;t+=430;
