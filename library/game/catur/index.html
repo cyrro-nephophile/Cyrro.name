@@ -1,1 +1,81 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <!-- Wajib ada supaya tampilan pas di layar HP portrait -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catur</title>
+  <style>
+    /* Warna dasar, dipakai di seluruh halaman */
+    :root { --terang:#f0d9b5; --gelap:#b58863; --bg:#1e1e1e; --teks:#eee; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { background:var(--bg); color:var(--teks); font-family:system-ui, sans-serif;
+           display:flex; flex-direction:column; align-items:center; min-height:100vh; padding:8px; }
+    /* Papan selalu persegi dan mengikuti lebar layar (maks 560px) */
+    #papan { width:min(96vw,560px); aspect-ratio:1/1; display:grid;
+             grid-template-columns:repeat(8,1fr); grid-template-rows:repeat(8,1fr);
+             border:3px solid #333; }
+    /* Setiap kotak. touch-action:none mencegah layar ikut tergeser saat jari menyentuh papan */
+    .kotak { display:flex; align-items:center; justify-content:center;
+             font-size:min(9vw,52px); line-height:1; user-select:none; touch-action:none; }
+    .terang { background:var(--terang); }
+    .gelap  { background:var(--gelap); }
+  </style>
+</head>
+<body>
+  <h2 id="status" style="margin:12px 0;">Memuat...</h2>
+  <div id="papan"></div>
 
+  <!-- Library aturan catur dari CDN (versi dikunci supaya tidak berubah tiba-tiba) -->
+  <script src="https://cdn.jsdelivr.net/npm/chess.js@0.10.3/chess.js"></script>
+  <script>
+    // Simbol unicode tiap bidak. Huruf besar = putih, huruf kecil = hitam
+    const SIMBOL = {
+      K:'♔', Q:'♕', R:'♖', B:'♗', N:'♘', P:'♙',
+      k:'♚', q:'♛', r:'♜', b:'♝', n:'♞', p:'♟'
+    };
+
+    // Membuat objek permainan baru. Isinya otomatis posisi awal catur standar
+    const game = new Chess();
+
+    // Menggambar ulang seluruh papan sesuai kondisi game saat ini
+    function gambarPapan() {
+      const papan = document.getElementById('papan');
+      papan.innerHTML = '';                // kosongkan papan dulu sebelum digambar ulang
+      const isi = game.board();            // array 8x8; baris 0 = rank 8, kolom 0 = file a
+
+      for (let baris = 0; baris < 8; baris++) {
+        for (let kolom = 0; kolom < 8; kolom++) {
+          const div = document.createElement('div');
+
+          // Pola kotak selang-seling. Kotak a8 (baris 0, kolom 0) itu terang
+          const terang = (baris + kolom) % 2 === 0;
+          div.className = 'kotak ' + (terang ? 'terang' : 'gelap');
+
+          // Simpan nama kotak, misal 'e2', untuk dipakai di langkah berikutnya
+          div.dataset.kotak = String.fromCharCode(97 + kolom) + (8 - baris);
+
+          // Kalau ada bidak di kotak ini, tampilkan simbolnya
+          const bidak = isi[baris][kolom];   // null kalau kosong
+          if (bidak) {
+            const kode = bidak.color === 'w' ? bidak.type.toUpperCase() : bidak.type;
+            div.textContent = SIMBOL[kode];
+          }
+
+          papan.appendChild(div);
+        }
+      }
+    }
+
+    // Menampilkan giliran siapa saat ini di judul
+    function gambarStatus() {
+      const giliran = game.turn() === 'w' ? 'Putih' : 'Hitam';
+      document.getElementById('status').textContent = 'Giliran: ' + giliran;
+    }
+
+    // Titik mulai: gambar papan dan status saat halaman siap
+    gambarPapan();
+    gambarStatus();
+  </script>
+</body>
+</html>
