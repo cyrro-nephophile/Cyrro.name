@@ -1,1 +1,234 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Catur vs Stockfish · Cyrro</title>
+<style>
+  :root { --light:#eeeed2; --dark:#769656; --sel:#f6f669; --bg:#1b1d24; --panel:#262a33; --fg:#e9ebf0; --accent:#7aa2ff; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; min-height:100%; }
+  body { background:var(--bg); color:var(--fg); font-family:system-ui,-apple-system,sans-serif;
+         display:flex; flex-direction:column; align-items:center; gap:12px;
+         padding:12px 10px 24px; -webkit-tap-highlight-color:transparent; }
+  h1 { font-size:1.15rem; margin:4px 0 0; }
+  #status { font-size:.95rem; min-height:1.4em; text-align:center; }
+  #board { display:grid; grid-template-columns:repeat(8,1fr); width:min(94vw,480px); aspect-ratio:1/1;
+           border-radius:6px; overflow:hidden; box-shadow:0 8px 24px rgba(0,0,0,.4); touch-action:manipulation; }
+  .sq { position:relative; display:flex; align-items:center; justify-content:center;
+        font-size:clamp(26px,9.5vw,46px); line-height:1; cursor:pointer; user-select:none; -webkit-user-select:none; }
+  .sq.l { background:var(--light); }
+  .sq.d { background:var(--dark); }
+  .sq.sel { background:var(--sel) !important; }
+  .sq.last::before { content:""; position:absolute; inset:0; background:rgba(255,230,0,.35); pointer-events:none; }
+  .sq.hint::after { content:""; position:absolute; width:30%; height:30%; border-radius:50%;
+                    background:rgba(0,0,0,.22); pointer-events:none; }
+  .sq.hint.cap::after { width:92%; height:92%; background:transparent; border:6px solid rgba(0,0,0,.22); }
+  .w { color:#fff; text-shadow:0 0 3px #000, 0 0 1px #000; }
+  .b { color:#111; }
+  .panel { background:var(--panel); border-radius:12px; padding:10px 12px; width:min(94vw,480px);
+           display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between; }
+  label { font-size:.85rem; opacity:.85; display:flex; align-items:center; gap:6px; }
+  select, button { font:inherit; font-size:.9rem; border:0; border-radius:8px; padding:8px 12px;
+                   background:#343a46; color:var(--fg); }
+  button { cursor:pointer; background:var(--accent); color:#0b1020; font-weight:600; }
+  button.ghost { background:#343a46; color:var(--fg); font-weight:500; }
+  button:disabled { opacity:.5; }
+  #moves { width:min(94vw,480px); font-size:.8rem; opacity:.7; max-height:90px; overflow:auto;
+           line-height:1.6; word-break:break-word; }
+</style>
+</head>
+<body>
 
+<h1>♞ Catur vs Stockfish</h1>
+<div id="status">Memuat mesin…</div>
+<div id="board" aria-label="Papan catur"></div>
+
+<div class="panel">
+  <label>Level <select id="level"></select></label>
+  <label>Kamu <select id="color">
+    <option value="w">Putih</option>
+    <option value="b">Hitam</option>
+  </select></label>
+  <button id="newBtn">Mulai baru</button>
+  <button id="undoBtn" class="ghost">Undo</button>
+</div>
+<div id="moves"></div>
+
+<script src="chess.js"></script>
+<script>
+const FILES = 'abcdefgh';
+const GLYPH = { k:'♚', q:'♛', r:'♜', b:'♝', n:'♞', p:'♟' };
+
+const game = new Chess();
+const $board  = document.getElementById('board');
+const $status = document.getElementById('status');
+const $moves  = document.getElementById('moves');
+const $level  = document.getElementById('level');
+const $color  = document.getElementById('color');
+const $undo   = document.getElementById('undoBtn');
+
+let playerColor = 'w';
+let selected = null;
+let legal = [];
+let busy = false;         // engine lagi mikir
+let engineReady = false;
+let onBest = null;        // callback saat bestmove datang
+let ignoreNext = false;   // buang bestmove dari pencarian yang di-stop
+
+for (let i = 0; i <= 20; i++) $level.add(new Option('Level ' + i, i, false, i === 5));
+
+// ---------- Stockfish (Web Worker, file lokal) ----------
+const engine = new Worker('stockfish.js');
+engine.onmessage = (e) => {
+  const line = String(e.data);
+  if (line === 'readyok' && !engineReady) {
+    engineReady = true;
+    newGame();
+    return;
+  }
+  if (line.startsWith('bestmove')) {
+    if (ignoreNext) { ignoreNext = false; return; }
+    const mv = line.split(' ')[1];
+    const cb = onBest; onBest = null;
+    if (cb) cb(mv);
+  }
+};
+engine.onerror = () => { $status.textContent = 'Gagal load stockfish.js, cek nama dan lokasi filenya'; };
+engine.postMessage('uci');
+engine.postMessage('isready');
+
+function setLevel() {
+  engine.postMessage('setoption name Skill Level value ' + $level.value);
+}
+$level.onchange = setLevel;
+
+function newGame() {
+  if (busy) { ignoreNext = true; engine.postMessage('stop'); }
+  busy = false; onBest = null;
+  playerColor = $color.value;
+  game.reset();
+  selected = null; legal = [];
+  setLevel();
+  engine.postMessage('ucinewgame');
+  update();
+  if (game.turn() !== playerColor) askEngine();
+}
+
+function askEngine() {
+  if (game.game_over()) return;
+  busy = true;
+  const ms = 200 + Number($level.value) * 150;   // level 0 ~0.2s, level 20 ~3.2s
+  onBest = (mv) => {
+    busy = false;
+    if (mv && mv !== '(none)') {
+      game.move({ from: mv.slice(0, 2), to: mv.slice(2, 4), promotion: mv[4] || 'q' });
+    }
+    update();
+  };
+  engine.postMessage('position fen ' + game.fen());
+  engine.postMessage('go movetime ' + ms);
+  update();
+}
+
+// ---------- Input pemain ----------
+function onSquare(sq) {
+  if (!engineReady || busy || game.game_over() || game.turn() !== playerColor) return;
+  const piece = game.get(sq);
+  if (selected && legal.some(m => m.to === sq)) return playerMove(selected, sq);
+  if (piece && piece.color === playerColor) select(sq);
+  else select(null);
+}
+
+function select(sq) {
+  selected = sq;
+  legal = sq ? game.moves({ square: sq, verbose: true }) : [];
+  render();
+}
+
+function playerMove(from, to) {
+  const m = game.move({ from, to, promotion: 'q' });
+  selected = null; legal = [];
+  if (!m) { update(); return; }
+  update();
+  if (!game.game_over()) askEngine();
+}
+
+function undo() {
+  if (busy || !engineReady || !game.history().length) return;
+  game.undo();
+  if (game.turn() !== playerColor && game.history().length) game.undo();
+  selected = null; legal = [];
+  update();
+}
+
+// ---------- Render ----------
+function update() {
+  render();
+  renderMoves();
+  $status.textContent = busy ? 'Komputer lagi mikir…' : statusText();
+  $undo.disabled = busy;
+}
+
+function statusText() {
+  const side = game.turn() === 'w' ? 'Putih' : 'Hitam';
+  if (game.in_checkmate()) {
+    const winner = game.turn() === 'w' ? 'b' : 'w';
+    return winner === playerColor ? 'Skakmat! Kamu menang 🎉' : 'Skakmat! Komputer menang';
+  }
+  if (game.in_stalemate()) return 'Stalemate, seri.';
+  if (game.in_draw()) return 'Seri.';
+  const who = game.turn() === playerColor ? 'giliran kamu' : 'giliran komputer';
+  return (game.in_check() ? 'Skak! ' : '') + side + ', ' + who;
+}
+
+function render() {
+  $board.innerHTML = '';
+  const flip = playerColor === 'b';
+  const board = game.board();
+  const hist = game.history({ verbose: true });
+  const last = hist[hist.length - 1];
+
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      const file = flip ? 7 - c : c;
+      const rank = flip ? r : 7 - r;          // 0 = rank 1
+      const sq = FILES[file] + (rank + 1);
+      const piece = board[7 - rank][file];
+
+      const cell = document.createElement('div');
+      cell.className = 'sq ' + ((file + rank) % 2 === 0 ? 'd' : 'l');
+      if (sq === selected) cell.classList.add('sel');
+      if (last && (last.from === sq || last.to === sq)) cell.classList.add('last');
+      if (legal.some(m => m.to === sq)) {
+        cell.classList.add('hint');
+        if (piece) cell.classList.add('cap');
+      }
+      if (piece) {
+        const s = document.createElement('span');
+        s.className = piece.color === 'w' ? 'w' : 'b';
+        s.textContent = GLYPH[piece.type];
+        cell.appendChild(s);
+      }
+      cell.onclick = () => onSquare(sq);
+      $board.appendChild(cell);
+    }
+  }
+}
+
+function renderMoves() {
+  const h = game.history();
+  const parts = [];
+  for (let i = 0; i < h.length; i += 2) {
+    parts.push((i / 2 + 1) + '. ' + h[i] + (h[i + 1] ? ' ' + h[i + 1] : ''));
+  }
+  $moves.textContent = parts.join('   ') || 'Belum ada langkah';
+}
+
+document.getElementById('newBtn').onclick = newGame;
+$undo.onclick = undo;
+$color.onchange = newGame;
+$status.textContent = 'Memuat mesin…';
+</script>
+</body>
+  </html>
