@@ -22,7 +22,7 @@ body{
   background-size:120px 120px;
 }
 :root[data-theme="dark"] body{background-image:linear-gradient(rgba(244,244,240,.1) 1.5px,transparent 1.5px),linear-gradient(90deg,rgba(244,244,240,.1) 1.5px,transparent 1.5px)}
-.framed .back{display:none}
+.framed .top{display:none}
 .framed{padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))!important}
 .framed #board{width:min(94vw,440px,max(220px,calc(100dvh - 360px)))}
 
@@ -197,17 +197,6 @@ select:disabled{opacity:.5;cursor:not-allowed}
   <div class="stat lvl"><small>LEVEL</small><select id="level"></select></div>
 </div>
 
-<!-- panel setup: muncul saat belum/sedang pilih warna -->
-<div class="panel" id="panelSetup" hidden>
-  <div class="field"><small>KAMU</small>
-    <select id="color">
-      <option value="w">Putih</option>
-      <option value="b">Hitam</option>
-    </select>
-  </div>
-  <button class="btn lime" id="startBtn" type="button">MAINKAN</button>
-</div>
-
 <!-- panel saat partai berjalan -->
 <div class="panel" id="panelGame" hidden>
   <button class="btn" id="undoBtn" type="button">UNDO</button>
@@ -221,6 +210,17 @@ select:disabled{opacity:.5;cursor:not-allowed}
 
 <div class="board">
   <div id="board" aria-label="Papan catur"></div>
+</div>
+
+<!-- panel setup: muncul saat belum/sedang pilih warna -->
+<div class="panel" id="panelSetup" hidden>
+  <div class="field"><small>KAMU</small>
+    <select id="color">
+      <option value="w">Putih</option>
+      <option value="b">Hitam</option>
+    </select>
+  </div>
+  <button class="btn lime" id="startBtn" type="button">MAINKAN</button>
 </div>
 
 <div class="confirm" id="confirm" hidden role="dialog" aria-modal="true" aria-labelledby="cfTitle">
