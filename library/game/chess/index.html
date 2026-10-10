@@ -24,6 +24,7 @@ body{
 :root[data-theme="dark"] body{background-image:linear-gradient(rgba(244,244,240,.1) 1.5px,transparent 1.5px),linear-gradient(90deg,rgba(244,244,240,.1) 1.5px,transparent 1.5px)}
 .framed .back{display:none}
 .framed{padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))!important}
+.framed #board{width:min(94vw,440px,max(220px,calc(100dvh - 360px)))}
 
 /* header */
 .top{width:100%;max-width:440px;display:flex;align-items:center;gap:12px;background:#101510;border:3px solid #0a0a0a;padding:8px 12px;box-shadow:6px 6px 0 var(--sh);flex:none}
@@ -45,7 +46,7 @@ body{
 /* board */
 .board{position:relative;background:#0a0a0a;border:4px solid #0a0a0a;box-shadow:8px 8px 0 var(--sh);padding:6px;flex:none}
 #board{display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);
-  width:min(94vw,440px,max(260px,calc(100dvh - 330px)));aspect-ratio:1/1;touch-action:manipulation}
+  width:min(94vw,440px,max(220px,calc(100dvh - 340px)));aspect-ratio:1/1;touch-action:manipulation}
 .sq{position:relative;display:flex;align-items:center;justify-content:center;font-size:clamp(24px,8.6vw,42px);line-height:1;cursor:pointer;min-width:0;min-height:0}
 .sq.l{background:var(--sq-l)}
 .sq.d{background:var(--sq-d)}
@@ -196,10 +197,6 @@ select:disabled{opacity:.5;cursor:not-allowed}
   <div class="stat lvl"><small>LEVEL</small><select id="level"></select></div>
 </div>
 
-<div class="board">
-  <div id="board" aria-label="Papan catur"></div>
-</div>
-
 <!-- panel setup: muncul saat belum/sedang pilih warna -->
 <div class="panel" id="panelSetup" hidden>
   <div class="field"><small>KAMU</small>
@@ -220,6 +217,10 @@ select:disabled{opacity:.5;cursor:not-allowed}
 <div class="log">
   <small>LANGKAH</small>
   <div id="moves">Belum ada langkah</div>
+</div>
+
+<div class="board">
+  <div id="board" aria-label="Papan catur"></div>
 </div>
 
 <div class="confirm" id="confirm" hidden role="dialog" aria-modal="true" aria-labelledby="cfTitle">
@@ -246,7 +247,7 @@ select:disabled{opacity:.5;cursor:not-allowed}
 
 <script src="chess.js"></script>
 <script>
-if (window.top !== window.self) document.body.classList.add('framed');
+const FRAMED = window.top !== window.self;
 try {
   var _t = localStorage.getItem('theme');
   if (_t === 'dark' || _t === 'light') document.documentElement.setAttribute('data-theme', _t);
@@ -661,6 +662,58 @@ document.addEventListener('click', (e) => {
 let savedBoard = 'klasik';
 try { savedBoard = localStorage.getItem('chess-board') || 'klasik'; } catch (e) {}
 applyBoard(savedBoard);
+
+// ---------- Mode overlay: pemilih tema & judul pindah ke bar atas Library ----------
+const PICK_CSS = `
+.tpick{position:relative;flex:none;margin-left:auto}
+.tbtn{width:40px;height:40px;padding:3px;background:#fff;border:3px solid #0a0a0a;box-shadow:3px 3px 0 #0a0a0a;cursor:pointer;display:grid;grid-template-columns:1fr 1fr;touch-action:manipulation}
+.tbtn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #0a0a0a}
+.tbtn i{display:block;border:1px solid #0a0a0a}
+.tbtn i:nth-child(1),.tbtn i:nth-child(4){background:var(--bl,#fcfbf7)}
+.tbtn i:nth-child(2),.tbtn i:nth-child(3){background:var(--bd,#a3c23a)}
+.tmenu{position:absolute;right:0;top:calc(100% + 8px);z-index:999;background:#fff;border:3px solid #0a0a0a;box-shadow:5px 5px 0 #0a0a0a;min-width:200px;padding:8px;display:grid;gap:6px}
+.tmenu[hidden]{display:none!important}
+.topt{display:flex;align-items:center;gap:10px;background:#fff;border:2px solid #0a0a0a;padding:6px 8px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px;color:#0a0a0a;cursor:pointer;text-align:left;box-shadow:2px 2px 0 #0a0a0a;touch-action:manipulation}
+.topt.on{background:#ccff00}
+.topt .sw{display:grid;grid-template-columns:1fr 1fr;width:26px;height:26px;border:2px solid #0a0a0a;flex:none}
+.topt .sw i{display:block}
+.topt .sw i:nth-child(1),.topt .sw i:nth-child(4){background:var(--bl)}
+.topt .sw i:nth-child(2),.topt .sw i:nth-child(3){background:var(--bd)}
+`;
+
+if (FRAMED) {
+  try {
+    const pd = window.parent.document;
+    const bar = pd.querySelector('.gm-bar');
+    const ttl = pd.getElementById('gmTitle');
+    if (bar && ttl) {
+      const st = pd.createElement('style');
+      st.id = 'cfPickCss';
+      st.textContent = PICK_CSS;
+      pd.head.appendChild(st);
+
+      ttl.innerHTML = 'CATUR <span style="color:#ccff00">VS</span> <span style="color:#ff0055">STOCKFISH</span>';
+
+      const $pick = document.querySelector('.tpick');
+      bar.appendChild($pick);
+
+      const onParentClick = (e) => {
+        if (!$tMenu.hidden && !e.target.closest('.tpick')) closeMenu();
+      };
+      pd.addEventListener('click', onParentClick);
+
+      window.addEventListener('pagehide', () => {
+        pd.removeEventListener('click', onParentClick);
+        $pick.remove();
+        st.remove();
+      });
+
+      document.body.classList.add('framed');
+    }
+  } catch (e) {
+    /* kalau bar Library tidak bisa diakses, header tetap tampil di dalam iframe */
+  }
+}
 
 update();
 </script>
